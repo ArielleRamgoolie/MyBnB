@@ -83,6 +83,9 @@ public class Project1 {
 		try {
             System.out.println("Enter the Host: ");
             int host = sc.nextInt();
+
+            System.out.println("Enter the Renter: ");
+            int renter = sc.nextInt();
             
             System.out.println("Enter the listing type: ");
             sc.nextLine();
@@ -107,17 +110,18 @@ public class Project1 {
             double latitude = sc.nextDouble();
             
             
-            String query = "INSERT INTO Listing (`Host`, `Type`, `Address`, `PostalCode`, `Longitude`, `latitude`, `City`, `Country`) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+            String query = "INSERT INTO Listing (`Host`, `Renter`, `Type`, `Address`, `PostalCode`, `Longitude`, `latitude`, `City`, `Country`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
             PreparedStatement stmt = con.prepareStatement(query);
             
             stmt.setInt(1, host);
-            stmt.setString(2, type);
-            stmt.setString(3, address);
-            stmt.setString(4, post);
-            stmt.setDouble(5, longitude);
-            stmt.setDouble(6, latitude);
-            stmt.setString(7, city);
-            stmt.setString(8, country);
+            stmt.setInt(2, renter);
+            stmt.setString(3, type);
+            stmt.setString(4, address);
+            stmt.setString(5, post);
+            stmt.setDouble(6, longitude);
+            stmt.setDouble(7, latitude);
+            stmt.setString(8, city);
+            stmt.setString(9, country);
             
             int rowsAffected = stmt.executeUpdate();
             stmt.close();
