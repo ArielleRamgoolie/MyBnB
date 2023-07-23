@@ -18,12 +18,12 @@ public class Menus {
             case 1:
                 // get listings
                 App.clearScreen();
-            	App.readListings(con, hostID);
+                Listings.readListings(con, hostID);
                 break;
             case 2:
                 // create listings
                 App.clearScreen();
-            	App.createListing(con, hostID);
+            	Listings.createListing(con, hostID);
                 break;
             case 3:
                 System.out.println("Exiting MyBnB. Goodbye!");
