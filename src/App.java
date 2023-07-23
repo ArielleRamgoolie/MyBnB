@@ -49,6 +49,11 @@ public class App {
                 startApp(con);
         }
     }
+
+    public static void clearScreen(){
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+    }
 	
     public static void readListings(Connection con, int hostId) {
     	try {
@@ -79,7 +84,7 @@ public class App {
             rs.close();
             stmt.close();
             return;
-            
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -143,7 +148,7 @@ public class App {
         }
 	}
 	
-	public void removeListing(int listing, int user) {
+	public void removeListing(int listing, int hostID) {
 		
 	}
 	
