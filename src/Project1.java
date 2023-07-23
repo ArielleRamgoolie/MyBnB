@@ -27,6 +27,8 @@ public class Project1 {
     }
     
     private static void startApp(Connection con) {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
     	
         // Provide a basic text interface to interact with app
         System.out.println("Welcome to our Airbnb App!");
@@ -141,33 +143,87 @@ public class Project1 {
         try {
             // Prepare the SQL query to check if the credentials are valid in the database.
             String query = "SELECT * FROM User WHERE Username = ? AND Password = ?";
+            String query2 = "SELECT * FROM User WHERE Username = ? AND Password = ? AND Type = 'h'";
+            
             PreparedStatement stmt = con.prepareStatement(query);
             stmt.setString(1, username);
             stmt.setString(2, password);
 
+            PreparedStatement stmt2 = con.prepareStatement(query2);
+            stmt2.setString(1, username);
+            stmt2.setString(2, password);
+
             // Execute the query and get the result set
             ResultSet rs = stmt.executeQuery();
+            ResultSet rs2 = stmt2.executeQuery();
 
             // Check if the result set has any rows (i.e., if the credentials match any user in the database)
-            boolean isValid = rs.next();
+            boolean isValidUser = rs.next();
 
-            // Close the resources
-            rs.close();
-            stmt.close();
-            if (isValid){
-                System.out.println("User Logged in");
+            int hostID = -1; // Initialize the hostID with a default value
+            int renterID = -1;
+
+            if (isValidUser){
+                boolean isHost = rs2.next();
+                if (isHost) {
+                    hostID = rs2.getInt("UserId");
+                    System.out.print("\033[H\033[2J");
+                    System.out.flush();
+                    hostMenu(con, hostID);
+                } else {
+                    renterID = rs.getInt("UserId");
+                    System.out.println("not implemented yet lol bye" + renterID);
+                    //renterMenu(con, renterID); 
+                }
             }else {
                 System.out.println("Unsuccessful Login");
             }
+            
+            // Close the resources
+            rs.close();
+            stmt.close();
+            rs2.close();
+            stmt2.close();
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
+    public static void hostMenu(Connection con, int hostID) {
+        // Provide a basic text interface to interact with app
+        System.out.println("Welcome Host! What would you like to do today?");
+        System.out.println("1. View my listings");
+        System.out.println("2. Create new listing");
+        System.out.println("3. Exit");
+
+        int choice = sc.nextInt();
+        switch (choice) {
+            case 1:
+                // get listings
+                System.out.print("\033[H\033[2J");
+                System.out.flush();
+            	readListings(con, hostID);
+                break;
+            case 2:
+                // create listings
+                System.out.print("\033[H\033[2J");
+                System.out.flush();
+            	createListing(con, hostID);
+                break;
+            case 3:
+                System.out.println("Exiting MyBnB. Goodbye!");
+                break;
+            default:
+                System.out.println("Invalid choice. Please try again.");
+                hostMenu(con, hostID);
+        }
+    }
+
 	
-    public static void readListings(Connection con) {
+    public static void readListings(Connection con, int hostId) {
     	try {
-            String query = "SELECT * FROM Listing";
+            String query = "SELECT * FROM Listing WHERE Host = " + hostId;
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(query);
 
@@ -187,21 +243,20 @@ public class Project1 {
             rs.close();
             stmt.close();
 
-            startApp(con);
+            return;
         } catch (SQLException e) {
             e.printStackTrace();
         }
 	}
 
-	public static void createListing(Connection con) {
+	public static void createListing(Connection con, int hostID) {
 		try {
-            System.out.println("Enter the Host: ");
-            int host = sc.nextInt();
+            int host = hostID;
 
-            System.out.println("Enter the Renter: ");
-            int renter = sc.nextInt();
+            //System.out.println("Enter the Renter: ");
+            int renter = 1; // listing schema might change 
             
-            System.out.println("Enter the listing type: ");
+            System.out.println("Enter the listing type: 'house', 'apartment', 'guesthouse' or 'hotel'");
             sc.nextLine();
             String type = sc.nextLine();
             
@@ -241,9 +296,9 @@ public class Project1 {
             stmt.close();
 
             if (rowsAffected > 0) {
-                System.out.println("Added successfully!");
+                System.out.println("Added your listing successfully!");
             } else {
-                System.out.println("Failed");
+                System.out.println("Failed, please try again");
             }
 
             startApp(con);
