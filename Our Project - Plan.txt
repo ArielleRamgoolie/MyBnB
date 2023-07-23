@@ -1,0 +1,193 @@
+Users
+    UserID (PK)
+    First Name
+    Last Name
+    Address
+    DOB [must be 18+]
+    Occupation
+    SIN
+    Type
+        Renter
+        Host
+    PaymentInfo [only for renter]
+
+Listings
+    ListingID
+    Type 
+        House
+        Apartment
+        Guesthouse
+	Hotel
+    Longitude
+    Latitude
+    Address
+        postal code
+        city
+        country
+    Price [per night] ?
+    Availability
+
+Pricing 
+    ListingID
+    Price
+    StartDate
+    EndDate ???
+
+Amenities
+    Listing ID
+    Type
+        Wifi
+        Hot water
+        ...
+    Status (Avail / Not Avail)
+
+Booking
+    Renter
+    Listing
+    StartDate
+    EndDate
+    Cost
+    Status
+        Active
+        Complete
+        Cancelled by host
+        Cancelled by renter
+        Blocked by host
+
+Comment
+    CommentId
+    FromUser
+    ToUser
+    Rating
+    Comment
+
+OPERATIONS
+Create/delete user
+Cancel Booking by renter or host
+Remove listing by host
+Create booking by renter
+Change price of listing
+Book a listing if available
+Comment only if valid
+
+
+QUERIES
+Listings for a specific logitude latitude within constant distance
+    Order by price, ascending or descending
+Search listing by Address (Street address, country, postal code)
+Filter search by availiability given date range
+
+REPORTS
+Total number of bookings in a specific date range by city/zip code
+Total number of listings given country, city, postal code
+Rank hosts by listings overall per country/city
+Report hosts who have more than 10% of listings in city/country 
+Rank renters by bookings over a time period/ city (minimmum 2 bookings)
+Rank hosts and renters by most cancellation per year
+Report noun phrases based on popularity for a listing
+
+TOOLKIT
+Suggest price for listing
+Suggest amenities host may like to add with estimated revenue increase
+
+
+CREATE TABLE `User` (
+	`UserId` INT NOT NULL AUTO_INCREMENT,
+    	`Username` VARCHAR(255) NOT NULL,
+   	`Password` VARCHAR(255) NOT NULL,
+	`Name` VARCHAR(255) NOT NULL,
+	`Address` VARCHAR(255) NOT NULL,
+	`DOB` DATE NOT NULL,
+	`Occupation` VARCHAR(255) NOT NULL,
+	`SIN` INT NOT NULL,
+	`Type` CHAR NOT NULL,
+	`PaymentInfo` VARCHAR(255) NOT NULL,
+	PRIMARY KEY (`UserId`)
+);
+
+CREATE TABLE `Listing` (
+	`ListingID` INT NOT NULL AUTO_INCREMENT,
+    `Renter` INT NOT NULL,
+	`Type` VARCHAR(255) NOT NULL,
+	`Address` VARCHAR(255) NOT NULL,
+    `PostalCode` VARCHAR(255) NOT NULL,
+    `Longitude` FLOAT NOT NULL,
+    `latitude` FLOAT NOT NULL,
+    `City` VARCHAR(255) NOT NULL,
+    `Country` VARCHAR(255) NOT NULL,
+	PRIMARY KEY (`ListingID`)
+);
+
+CREATE TABLE `Pricing` (
+	`ListingID` INT NOT NULL,
+	`Price` FLOAT NOT NULL,
+	`StartDate` DATE NOT NULL,
+    `EndDate` DATE,
+	PRIMARY KEY (`ListingID`, `StartDate`)
+);
+
+CREATE TABLE `Amenities` (
+	`ListingID` INT NOT NULL,
+	`Type` VARCHAR(255) NOT NULL,
+	PRIMARY KEY (`ListingID`, `Type`)
+);
+
+CREATE TABLE `ListingComment` (
+	`CommentID` INT NOT NULL AUTO_INCREMENT,
+    `FromUser` INT NOT NULL,
+    `ListingID` INT NOT NULL,
+    `Rating` INT NOT NULL,
+    `Comment` VARCHAR(255) NOT NULL,
+	PRIMARY KEY (`CommentID`)
+);
+
+CREATE TABLE `RenterComment` (
+	`CommentID` INT NOT NULL AUTO_INCREMENT,
+    `FromUser` INT NOT NULL,
+    `ToUser` INT NOT NULL,
+	`Rating` INT NOT NULL,
+    `Comment` VARCHAR(255) NOT NULL,
+	PRIMARY KEY (`CommentID`)
+);
+
+CREATE TABLE `Booking` (
+	`BookingID` INT NOT NULL AUTO_INCREMENT,
+    `ListingID` INT NOT NULL,
+    `Renter` INT NOT NULL,
+    `StartDate` DATE NOT NULL,
+    `EndDate` DATE NOT NULL,
+	`Cost` FLOAT NOT NULL,
+    `Status` VARCHAR(255) NOT NULL,
+	PRIMARY KEY (`BookingID`)
+);
+
+INSERT INTO `MyBnB`.`User` (`UserId`, `Name`, `Address`, `DOB`, `Occupation`, `SIN`, `Type`, `PaymentInfo`) VALUES (NULL, 'Maaneth', '123 Sesame St', '2002-12-25', 'Software Engineer', '12345', 'H', NULL);
+INSERT INTO `MyBnB`.`User` (`UserId`, `Name`, `Address`, `DOB`, `Occupation`, `SIN`, `Type`, `PaymentInfo`) VALUES (NULL, 'Arielle', '121 Sesame St', '2000-10-27', 'Software Developer', '23456', 'R', 'Credit card num');
+INSERT INTO `MyBnB`.`User` (`UserId`, `Name`, `Address`, `DOB`, `Occupation`, `SIN`, `Type`, `PaymentInfo`) VALUES (NULL, 'Shadman', '124 Sesame St', '2002-1-09', 'Software Engineer', '123234', 'H', NULL);
+INSERT INTO `MyBnB`.`User` (`UserId`, `Name`, `Address`, `DOB`, `Occupation`, `SIN`, `Type`, `PaymentInfo`) VALUES (NULL, 'Austin', '125 Sesame St', '2002-4-21', 'Software Developer', '34563', 'R', 'Credit card num');
+
+INSERT INTO `MyBnB`.`Listing` (`Host`, `Type`, `Address`, `PostalCode`, `Longitude`, `latitude`, `City`, `Country`) VALUES ('2', 'Full house', '12 bnb drive', 'L2NT3G', '123123.134', '23423.123', 'Paris', 'France');
+INSERT INTO `MyBnB`.`Listing` (`Host`, `Type`, `Address`, `PostalCode`, `Longitude`, `latitude`, `City`, `Country`) VALUES ('2', 'Full house', '13 bnb drive', 'L2NT3G', '123125.134', '23423.123', 'Paris', 'France');
+INSERT INTO `MyBnB`.`Listing` (`Host`, `Type`, `Address`, `PostalCode`, `Longitude`, `latitude`, `City`, `Country`) VALUES ('4', 'Apartment', '12 mornelle ct apt 10', 'L6A3L3', '12312.134', '23423.123', 'Toronto', 'Canada');
+INSERT INTO `MyBnB`.`Listing` (`Host`, `Type`, `Address`, `PostalCode`, `Longitude`, `latitude`, `City`, `Country`) VALUES ('4', 'Apartment', '13 mornelle ct apt 10', 'L6A3L3', '12312.134', '23423.123', 'Toronto', 'Canada');
+
+INSERT INTO `MyBnB`.`Pricing` (`ListingID`, `Price`, `StartDate`) VALUES ('1', '234.99', '2021-12-2');
+INSERT INTO `MyBnB`.`Pricing` (`ListingID`, `Price`, `StartDate`) VALUES ('2', '42342', '2022-05-24');
+INSERT INTO `MyBnB`.`Pricing` (`ListingID`, `Price`, `StartDate`) VALUES ('3', '23.99', '2021-12-2');
+INSERT INTO `MyBnB`.`Pricing` (`ListingID`, `Price`, `StartDate`) VALUES ('4', '423.54', '2022-05-24');
+INSERT INTO `MyBnB`.`Pricing` (`ListingID`, `Price`, `StartDate`, `EndDate`) VALUES ('4', '400', '2021-05-23', '2022-05-23');
+
+
+INSERT INTO `MyBnB`.`Amenities` VALUES (1, 'Toilet Paper');
+INSERT INTO `MyBnB`.`Amenities` VALUES (2, 'Toilet Paper');
+INSERT INTO `MyBnB`.`Amenities` VALUES (3, 'Toilet Paper');
+INSERT INTO `MyBnB`.`Amenities` VALUES (4, 'Toilet Paper');
+INSERT INTO `MyBnB`.`Amenities` VALUES (1, 'Wifi');
+INSERT INTO `MyBnB`.`Amenities` VALUES (2, 'Wifi');
+INSERT INTO `MyBnB`.`Amenities` VALUES (3, 'Wifi');
+INSERT INTO `MyBnB`.`Amenities` VALUES (4, 'Wifi');
+INSERT INTO `MyBnB`.`Amenities` VALUES (1, 'Heating');
+INSERT INTO `MyBnB`.`Amenities` VALUES (4, 'Heating');
+INSERT INTO `MyBnB`.`Amenities` VALUES (1, 'Air Conditioning');
+INSERT INTO `MyBnB`.`Amenities` VALUES (2, 'Air Conditioning');
+INSERT INTO `MyBnB`.`Amenities` VALUES (3, 'Air Conditioning');
