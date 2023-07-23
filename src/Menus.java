@@ -25,7 +25,7 @@ public class Menus {
                 App.clearScreen();
             	Listings.createListing(con, hostID);
                 break;
-            case 3:
+            case 5:
                 System.out.println("Exiting MyBnB. Goodbye!");
                 break;
             default:
@@ -49,7 +49,7 @@ public class Menus {
             case 1:
                 // get listings
                 App.clearScreen();
-            	App.readListings(con, -1);
+            	Listings.readListings(con, -1);
                 break;
             case 6:
                 System.out.println("Exiting MyBnB. Goodbye!");

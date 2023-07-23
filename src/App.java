@@ -42,6 +42,7 @@ public class App {
                 Users.createUser(con);
                 break;
             case 3:
+                clearScreen();
                 System.out.println("Exiting MyBnB. Goodbye!");
                 break;
             default:

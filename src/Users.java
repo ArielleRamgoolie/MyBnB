@@ -123,8 +123,7 @@ public class Users {
                     Menus.hostMenu(con, hostID);
                 } else {
                     renterID = rs.getInt("UserId");
-                    System.out.println("not implemented yet lol bye" + renterID);
-                    //renterMenu(con, renterID); 
+                    Menus.renterMenu(con, renterID); 
                 }
             }else {
                 System.out.println("Unsuccessful Login");
