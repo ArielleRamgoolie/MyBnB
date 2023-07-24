@@ -19,12 +19,12 @@ public class Menus {
                 // get listings
                 App.clearScreen();
                 Listings.readListings(con, hostID);
-                break;
+                hostMenu(con, hostID);
             case 2:
                 // create listings
                 App.clearScreen();
             	Listings.createListing(con, hostID);
-                break;
+                hostMenu(con, hostID);
             case 5:
                 System.out.println("Exiting MyBnB. Goodbye!");
                 break;
@@ -50,7 +50,7 @@ public class Menus {
                 // get listings
                 App.clearScreen();
             	Listings.readListings(con, -1);
-                break;
+                renterMenu(con, renterID);
             case 6:
                 System.out.println("Exiting MyBnB. Goodbye!");
                 break;
