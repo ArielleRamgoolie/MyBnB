@@ -38,11 +38,12 @@ public class Menus {
         // Provide a basic text interface to interact with app
         System.out.println("Welcome Renter! What would you like to do today?");
         System.out.println("1. View all listings");
-        System.out.println("2. Create a booking");
-        System.out.println("3. See my booking future bookings");
-        System.out.println("4. See my booking past bookings");
-        System.out.println("5. Delete my account and cancel all bookings");
-        System.out.println("6. Exit");
+        System.out.println("2. Sort listings");
+        System.out.println("3. Create a booking");
+        System.out.println("4. See my booking future bookings");
+        System.out.println("5. See my booking past bookings");
+        System.out.println("6. Delete my account and cancel all bookings");
+        System.out.println("7. Exit");
 
         int choice = sc.nextInt();
         switch (choice) {
@@ -51,12 +52,63 @@ public class Menus {
                 App.clearScreen();
             	Listings.readListings(con, -1);
                 renterMenu(con, renterID);
-            case 6:
+            case 2:
+                // get listings
+                App.clearScreen();
+            	sortingMenu(con);
+                renterMenu(con, renterID);
+            case 7:
                 System.out.println("Exiting MyBnB. Goodbye!");
                 break;
             default:
                 System.out.println("Invalid choice or Feature not yet implemented. Please try again.");
                 renterMenu(con, renterID);
+        }
+    }
+
+    public static void sortingMenu(Connection con){
+        System.out.println("What would you like to sort listings by?");
+        System.out.println("1. Sort by price (ascending)");
+        System.out.println("2. Sort by price (decending)");
+        System.out.println("3. Listings above a certain price");
+        System.out.println("4. Listings below a certain price");
+        System.out.println("5. Sort by type of listing");
+
+        int choice = sc.nextInt();
+        switch (choice) {
+            case 1:
+                App.clearScreen();
+            	Sorts.ascendingPrices(con);
+                break;
+            case 2:
+                App.clearScreen();
+            	Sorts.decendingPrices(con);
+                break;
+            case 3:
+                App.clearScreen();
+                System.out.println("Enter a min price for the listings you would like to see");
+                int max = sc.nextInt();
+            	Sorts.maxListing(max, con);
+                break;
+            case 4:
+                App.clearScreen();
+                System.out.println("Enter a max price for the listings you would like to see");
+                int min = sc.nextInt();
+            	Sorts.minListing(min, con);
+                break;
+            case 5:
+                App.clearScreen();
+                System.out.println("Which of the following types of listing you you like to see?");
+                System.out.println("house");
+                System.out.println("apartment");
+                System.out.println("guesthouse");
+                System.out.println("hotel");
+                String type = sc.next();
+            	Sorts.typeSort(type, con);
+                break;
+            default:
+                System.out.println("Invalid choice or Feature not yet implemented. Please try again.");
+                return;
         }
     }
 }

@@ -7,11 +7,13 @@ public class App {
     
     private static final String DB_PASSWORD = "cscc43p1";
     private static final Scanner sc = new Scanner(System.in);
+
+    private static Connection con;
     
     public static void main(String[] args) {
         try {
             // Create a connection to the database
-        	Connection con = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+        	con = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
 
             // Start the airbnb app
             startApp(con);
