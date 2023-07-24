@@ -2,6 +2,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -29,6 +31,11 @@ public class Users {
                 System.out.println("Enter your Date of Birth (yyyy-mm-dd): ");
                 dob = sc.next();
             } while (!isValidDateFormat(dob));
+
+            if (!isAdult(dob)) {
+                System.out.println("You must be 18 years or older to register.");
+                return;
+            }
 
             System.out.println("Enter your SIN I am the bank >;) : ");
             int SIN = sc.nextInt();
@@ -85,9 +92,20 @@ public class Users {
         return matcher.matches();
     }
 
+    // Method to check if the user is 18 years or older
+    private static boolean isAdult(String birthday) {
+        LocalDate birthDate = LocalDate.parse(birthday);
+        LocalDate currentDate = LocalDate.now();
+
+        boolean valid = Period.between(birthDate, currentDate).getYears() > 17;
+
+        return valid; 
+    }
+
     public static void loginUser(Connection con) {
         System.out.println("Enter your username: ");
         String username = sc.next();
+        
         System.out.println("Enter your password: ");
         String password = sc.next();
 
