@@ -14,21 +14,24 @@ public class Users {
     public static void createUser(Connection con){
         try {
             // Assume that user will always enter all of their data (:
-            System.out.println("Enter your Username: ");
+            System.out.println("Enter your username: ");
             String username = sc.next();
-            
-            System.out.println("Enter your Password: ");
+        
+            System.out.println("Enter your password: ");
             String password = sc.next();
 
-            System.out.println("Enter your Name: ");
-            String name = sc.next();
+            System.out.println("Enter your first name: ");
+            String first_name = sc.next();
+
+            System.out.println("Enter your last name: ");
+            String last_name = sc.next();
             
-            System.out.println("Enter your Address: ");
+            System.out.println("Enter your address: ");
             String address = sc.next();
 
             String dob;
             do {
-                System.out.println("Enter your Date of Birth (yyyy-mm-dd): ");
+                System.out.println("Enter your date of birth (yyyy-mm-dd): ");
                 dob = sc.next();
             } while (!isValidDateFormat(dob));
 
@@ -41,7 +44,7 @@ public class Users {
             int SIN = sc.nextInt();
             sc.nextLine();
             
-            System.out.println("Enter your Occupation: ");
+            System.out.println("Enter your occupation: ");
             String occupation = sc.next();
             
             System.out.println("Enter which type of user you are (h - host or r - renter): ");
@@ -56,18 +59,19 @@ public class Users {
                 payment = "null";
             }
             
-            String query = "INSERT INTO User (`Username`, `Password`, `Name`, `Address`, `DOB`, `Occupation`, `SIN`, `Type`, `PaymentInfo`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+            String query = "INSERT INTO Users (`username`, `password`, `first_name`, `last_name`, `address`, `dob`, `occupation`, `SIN`, `type`, `payment_info`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
             PreparedStatement stmt = con.prepareStatement(query);
             
             stmt.setString(1, username);
             stmt.setString(2, password);
-            stmt.setString(3, name);
-            stmt.setString(4, address);
-            stmt.setString(5, dob);
-            stmt.setString(6, occupation);
-            stmt.setInt(7, SIN);
-            stmt.setString(8, type);
-            stmt.setString(9, payment);
+            stmt.setString(3, first_name);
+            stmt.setString(4, last_name);
+            stmt.setString(5, address);
+            stmt.setString(6, dob);
+            stmt.setString(7, occupation);
+            stmt.setInt(8, SIN);
+            stmt.setString(9, type);
+            stmt.setString(10, payment);
             
             int rowsAffected = stmt.executeUpdate();
             stmt.close();
@@ -111,8 +115,8 @@ public class Users {
 
         try {
             // Prepare the SQL query to check if the credentials are valid in the database.
-            String query = "SELECT * FROM User WHERE Username = ? AND Password = ?";
-            String query2 = "SELECT * FROM User WHERE Username = ? AND Password = ? AND Type = 'h'";
+            String query = "SELECT * FROM Users WHERE username = ? AND password = ?";
+            String query2 = "SELECT * FROM Users WHERE username = ? AND password = ? AND type = 'h'";
             
             PreparedStatement stmt = con.prepareStatement(query);
             stmt.setString(1, username);
@@ -135,12 +139,12 @@ public class Users {
             if (isValidUser){
                 boolean isHost = rs2.next();
                 if (isHost) {
-                    hostID = rs2.getInt("UserId");
+                    hostID = rs2.getInt("id");
                     System.out.print("\033[H\033[2J");
                     System.out.flush();
                     Menus.hostMenu(con, hostID);
                 } else {
-                    renterID = rs.getInt("UserId");
+                    renterID = rs.getInt("id");
                     Menus.renterMenu(con, renterID); 
                 }
             }else {

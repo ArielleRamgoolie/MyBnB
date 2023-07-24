@@ -14,9 +14,9 @@ public class Listings {
 
             // if renter is requesting to see all listings, hostID = -1
             if (hostId == -1){
-                query = "SELECT * FROM Listing";
+                query = "SELECT * FROM Listings";
             } else {
-                query = "SELECT * FROM Listing WHERE Host = " + hostId;
+                query = "SELECT * FROM Listings WHERE host_id = " + hostId;
             }
 
             Statement stmt = con.createStatement();
@@ -24,19 +24,21 @@ public class Listings {
 
             App.clearScreen();
             System.out.println("All Listings:");
-            System.out.println("-----------------------------------------------------------------------");
-            System.out.printf("%-10s %-10s %-20s %-15s %-15s\n", "Host ID", "Type", "Location", "Latitude", "Longitude");
-            System.out.println("-----------------------------------------------------------------------");
+            System.out.println("--------------------------------------------------------------------------------------");
+            System.out.printf("%-10s %-10s %-10s %-10s %-20s %-10s %-10s\n", "ListingID", "HostID", "Type", "Price","Address", "Latitude", "Longitude");
+            System.out.println("--------------------------------------------------------------------------------------");
             while (rs.next()) {
-                int host = rs.getInt("Host");
-                String type = rs.getString("Type");
-                String address = rs.getString("Address");
-                float longitude = rs.getFloat("Longitude");
-                float latitude = rs.getFloat("Latitude");
+                int host = rs.getInt("host_id");
+                int listing = rs.getInt("id");
+                String type = rs.getString("type");
+                float price = rs.getFloat("price");
+                String address = rs.getString("address");
+                float longitude = rs.getFloat("longitude");
+                float latitude = rs.getFloat("latitude");
 
-                System.out.printf("%-10d %-10s %-20s %-15.2f %-15.2f\n", host, type, address, latitude, longitude);
+                System.out.printf("%-10d %-10d %-10s %-10.2f %-20s %-10.2f %-10.2f\n", listing, host, type, price, address, latitude, longitude);
             }
-            System.out.println("-----------------------------------------------------------------------");
+            System.out.println("--------------------------------------------------------------------------------------");
 
             rs.close();
             stmt.close();
@@ -56,25 +58,13 @@ public class Listings {
 	public static void createListing(Connection con, int hostID) {
 		try {
             int host = hostID;
-
-            //System.out.println("Enter the Renter: ");
-            int renter = 1; // listing schema might change bc renter should not be allowed to create listing
             
             System.out.println("Enter the listing type: 'house', 'apartment', 'guesthouse' or 'hotel'");
-            sc.nextLine();
             String type = sc.nextLine();
             
             System.out.println("Enter the address: ");
             String address = sc.nextLine();
             
-            System.out.println("Enter the postal code: ");
-            String post = sc.nextLine();
-            
-            System.out.println("Enter the city: ");
-            String city = sc.nextLine();
-            
-            System.out.println("Enter the country: ");
-            String country = sc.nextLine();
             
             System.out.println("Enter the longitude: ");
             double longitude = sc.nextDouble();
@@ -82,19 +72,18 @@ public class Listings {
             System.out.println("Enter the latitude: ");
             double latitude = sc.nextDouble();
             
+            System.out.println("Enter the price per night: ");
+            double price = sc.nextDouble();
             
-            String query = "INSERT INTO Listing (`Host`, `Renter`, `Type`, `Address`, `PostalCode`, `Longitude`, `latitude`, `City`, `Country`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+            String query = "INSERT INTO Listings (`host_id`, `type`, `address`, `longitude`, `latitude`, `price`) VALUES (?, ?, ?, ?, ?, ?);";
             PreparedStatement stmt = con.prepareStatement(query);
             
             stmt.setInt(1, host);
-            stmt.setInt(2, renter);
-            stmt.setString(3, type);
-            stmt.setString(4, address);
-            stmt.setString(5, post);
-            stmt.setDouble(6, longitude);
-            stmt.setDouble(7, latitude);
-            stmt.setString(8, city);
-            stmt.setString(9, country);
+            stmt.setString(2, type);
+            stmt.setString(3, address);
+            stmt.setDouble(4, longitude);
+            stmt.setDouble(5, latitude);
+            stmt.setDouble(6, price);
             
             int rowsAffected = stmt.executeUpdate();
             stmt.close();
@@ -105,7 +94,7 @@ public class Listings {
                 System.out.println("Failed, please try again");
             }
 
-            App.startApp(con);
+            return;
         } catch (SQLException e) {
             e.printStackTrace();
         }

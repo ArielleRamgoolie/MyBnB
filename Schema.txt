@@ -20,9 +20,11 @@ CREATE TABLE Listings (
     longitude FLOAT NOT NULL,
     latitude FLOAT NOT NULL,
     address VARCHAR(255) NOT NULL,
+    price FLOAT NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (host_id) REFERENCES Users(id)
 );
+
 
 CREATE TABLE Amenities (
     id INT NOT NULL AUTO_INCREMENT,
