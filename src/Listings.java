@@ -22,21 +22,30 @@ public class Listings {
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(query);
 
+            App.clearScreen();
             System.out.println("All Listings:");
-            System.out.println("-----------------------------------");
+            System.out.println("-----------------------------------------------------------------------");
+            System.out.printf("%-10s %-10s %-20s %-15s %-15s\n", "Host ID", "Type", "Location", "Latitude", "Longitude");
+            System.out.println("-----------------------------------------------------------------------");
             while (rs.next()) {
                 int host = rs.getInt("Host");
                 String type = rs.getString("Type");
                 String address = rs.getString("Address");
+                float longitude = rs.getFloat("Longitude");
+                float latitude = rs.getFloat("Latitude");
 
-                System.out.println("Host ID: " + host);
-                System.out.println("Title: " + type);
-                System.out.println("Content: " + address);
-                System.out.println("-----------------------------------");
+                System.out.printf("%-10d %-10s %-20s %-15.2f %-15.2f\n", host, type, address, latitude, longitude);
             }
+            System.out.println("-----------------------------------------------------------------------");
 
             rs.close();
             stmt.close();
+
+            // Wait for user input (pressing Enter) before continuing
+            System.out.println("\nPress Enter to continue...");
+            Scanner sc = new Scanner(System.in);
+            sc.nextLine();
+
             return;
 
         } catch (SQLException e) {
@@ -49,7 +58,7 @@ public class Listings {
             int host = hostID;
 
             //System.out.println("Enter the Renter: ");
-            int renter = 1; // listing schema might change 
+            int renter = 1; // listing schema might change bc renter should not be allowed to create listing
             
             System.out.println("Enter the listing type: 'house', 'apartment', 'guesthouse' or 'hotel'");
             sc.nextLine();
