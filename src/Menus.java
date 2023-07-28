@@ -48,12 +48,10 @@ public class Menus {
         int choice = sc.nextInt();
         switch (choice) {
             case 1:
-                // get listings
                 App.clearScreen();
             	Listings.readListings(con, -1);
                 renterMenu(con, renterID);
             case 2:
-                // get listings
                 App.clearScreen();
             	sortingMenu(con);
                 renterMenu(con, renterID);
@@ -73,6 +71,9 @@ public class Menus {
         System.out.println("3. Listings above a certain price");
         System.out.println("4. Listings below a certain price");
         System.out.println("5. Sort by type of listing");
+        System.out.println("6. Sort by type of distance (longitude and latitude)");
+        System.out.println("7. Sort by multiple filters");
+        System.out.println("8. Exit sort");
 
         int choice = sc.nextInt();
         switch (choice) {
