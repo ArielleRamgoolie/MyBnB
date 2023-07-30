@@ -3,6 +3,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.Scanner;
 
 public class Listings {
@@ -93,6 +94,36 @@ public class Listings {
             } else {
                 System.out.println("Failed, please try again");
             }
+
+            return;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+	}
+
+    public static void getAvailability(Connection con, int listingId) {
+        String query = "SELECT * FROM Bookings WHERE listing_id = ?;";
+		try {
+            
+            PreparedStatement stmt = con.prepareStatement(query);
+            
+            stmt.setInt(1, listingId);
+            
+            ResultSet rs = stmt.executeQuery();
+            java.sql.Date start = new java.sql.Date(System.currentTimeMillis());
+            SimpleDateFormat formatter = new SimpleDateFormat("dd MMMM yyyy");
+            System.out.println("--------------------------------------------------------------------------------------");
+            System.out.println("Available Days \n");
+
+
+            while (rs.next()) {
+                System.out.printf("From %-10s to %-10s\n", formatter.format(start), formatter.format(rs.getDate("start_date", null)));
+                start = rs.getDate("end_date", null);
+            }
+            System.out.println("\nAny day after "+ start);
+            System.out.println("--------------------------------------------------------------------------------------");
+            rs.close();
+            stmt.close();
 
             return;
         } catch (SQLException e) {

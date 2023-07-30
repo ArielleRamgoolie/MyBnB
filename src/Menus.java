@@ -55,6 +55,9 @@ public class Menus {
                 App.clearScreen();
             	sortingMenu(con);
                 renterMenu(con, renterID);
+            case 3:
+                Listings.getAvailability(con, 1);
+                renterMenu(con, renterID);
             case 7:
                 System.out.println("Exiting MyBnB. Goodbye!");
                 break;
