@@ -34,7 +34,7 @@ public class Menus {
         }
     }
 
-    public static void renterMenu(Connection con, int renterID){
+    public static void renterMenu(Connection con, int renterID) {
         // Provide a basic text interface to interact with app
         System.out.println("Welcome Renter! What would you like to do today?");
         System.out.println("1. View all listings");
@@ -56,7 +56,7 @@ public class Menus {
             	sortingMenu(con);
                 renterMenu(con, renterID);
             case 3:
-                Listings.getAvailability(con, 1);
+                Listings.createBooking(con);
                 renterMenu(con, renterID);
             case 7:
                 System.out.println("Exiting MyBnB. Goodbye!");

@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 
 public class Users {
     private static final Scanner sc = new Scanner(System.in);
+    public static int userId = -1;
         
     public static void createUser(Connection con){
         try {
@@ -142,9 +143,11 @@ public class Users {
                     hostID = rs2.getInt("id");
                     System.out.print("\033[H\033[2J");
                     System.out.flush();
+                    userId = hostID;
                     Menus.hostMenu(con, hostID);
                 } else {
                     renterID = rs.getInt("id");
+                    userId = renterID;
                     Menus.renterMenu(con, renterID); 
                 }
             }else {
