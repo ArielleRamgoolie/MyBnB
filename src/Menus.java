@@ -54,9 +54,19 @@ public class Menus {
             case 2:
                 App.clearScreen();
             	sortingMenu(con);
+                App.clearScreen();
                 renterMenu(con, renterID);
             case 3:
-                Listings.createBooking(con);
+                Bookings.createBooking(con);
+                App.clearScreen();
+                renterMenu(con, renterID);
+            case 4:
+                Bookings.readBookings(con, true);
+                App.clearScreen();
+                renterMenu(con, renterID);
+            case 5:
+                Bookings.readBookings(con, false);
+                App.clearScreen();
                 renterMenu(con, renterID);
             case 7:
                 System.out.println("Exiting MyBnB. Goodbye!");
