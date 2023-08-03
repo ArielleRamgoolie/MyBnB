@@ -10,22 +10,37 @@ public class Menus {
         System.out.println("1. View my listings");
         System.out.println("2. Create new listing");
         System.out.println("3. Update a current listing");
-        System.out.println("4. Delete my account and all listings");
-        System.out.println("5. Exit");
+        System.out.println("4. Cancel a booking");
+        System.out.println("5. See my booking future bookings");
+        System.out.println("6. See my booking past bookings");
+        System.out.println("7. Delete my account and all listings");
+        System.out.println("8. Exit");
 
         int choice = sc.nextInt();
         switch (choice) {
             case 1:
                 // get listings
                 App.clearScreen();
-                Listings.readListings(con, hostID);
+                Listings.readListings(con);
                 hostMenu(con, hostID);
             case 2:
                 // create listings
                 App.clearScreen();
             	Listings.createListing(con, hostID);
                 hostMenu(con, hostID);
+            case 4:
+                Bookings.cancelBooking(con);
+                App.clearScreen();
+                hostMenu(con, hostID);
             case 5:
+                Bookings.readBookings(con, true);
+                App.clearScreen();
+                hostMenu(con, hostID);
+            case 6:
+                Bookings.readBookings(con, false);
+                App.clearScreen();
+                hostMenu(con, hostID);
+            case 7:
                 System.out.println("Exiting MyBnB. Goodbye!");
                 break;
             default:
@@ -50,7 +65,7 @@ public class Menus {
         switch (choice) {
             case 1:
                 App.clearScreen();
-            	Listings.readListings(con, -1);
+            	Listings.readListings(con);
                 renterMenu(con, renterID);
             case 2:
                 App.clearScreen();

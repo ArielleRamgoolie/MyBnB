@@ -153,7 +153,10 @@ public class Bookings {
             String query = "UPDATE Bookings SET status = ? WHERE id = ?;";
             PreparedStatement stmt = con.prepareStatement(query);
 
-            stmt.setInt(1, CANCELLED_BY_RENTER);
+            if (Users.isHost)
+                stmt.setInt(1, CANCELLED_BY_HOST);
+            else
+                stmt.setInt(1, CANCELLED_BY_RENTER);
             stmt.setInt(2, id);
 
             int rowsAffected = stmt.executeUpdate();
@@ -177,8 +180,13 @@ public class Bookings {
     public static void readBookings(Connection con, boolean future) {
         try {
 
-            String query = "SELECT * FROM Bookings JOIN Listings on Bookings.listing_id = Listings.id where start_date"
-                    + (future ? ">" : "<") + "curdate() AND renter_id = ? AND status = " + ACTIVE + " ORDER BY start_date;";
+            String query = "SELECT Bookings.*, Listings.*, CONCAT(Users.first_name, ' ', Users.last_name) as renter_name FROM Bookings "
+                    + "JOIN Listings on Bookings.listing_id = Listings.id "
+                    + "JOIN Users on Users.id = " + (Users.isHost ? "Bookings.renter_id": "Listings.host_id")
+                    + " where start_date "
+                    + (future ? ">" : "<") + " curdate() AND " + (Users.isHost ? "host_id": "renter_id")
+                    + " = ? AND status = " + ACTIVE + " ORDER BY start_date;";
+        
             PreparedStatement stmt = con.prepareStatement(query);
 
             stmt.setInt(1, Users.userId);
@@ -186,18 +194,19 @@ public class Bookings {
             ResultSet rs = stmt.executeQuery();
 
             App.clearScreen();
-
+            System.out.println(query);
             System.out.println("Bookings:");
             SimpleDateFormat parser = new SimpleDateFormat("dd MMMM YYYY");
 
-            System.out.printf("%-10s %-10s %-20s $ %-20s %-20s %-20s %-20s\n", "ID", "Type", "Address", "Cost",
+            System.out.printf("%-10s %-20s %-10s %-20s $ %-20s %-20s %-20s %-20s\n", "ID", (Users.isHost ? "Renter" : "Host"), "Type", "Address", "Cost",
                     "Nights", "Check-in", "Check-out");
             System.out.println(
                     "--------------------------------------------------------------------------------------------------------------------------------");
             while (rs.next()) {
 
-                System.out.printf("%-10s %-10s %-20s $ %-20s %-20s %-20s %-20s\n",
+                System.out.printf("%-10s %-20s %-10s %-20s $ %-20s %-20s %-20s %-20s\n",
                         rs.getInt("id"),
+                        rs.getString("renter_name"),
                         rs.getString("type").toUpperCase(),
                         rs.getString("address"),
                         rs.getDouble("total_cost"),
@@ -206,8 +215,6 @@ public class Bookings {
                         parser.format(rs.getDate("end_date")));
 
             }
-            // System.out
-            // .println("--------------------------------------------------------------------------------------");
 
             rs.close();
             stmt.close();

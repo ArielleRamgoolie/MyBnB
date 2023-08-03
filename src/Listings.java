@@ -8,16 +8,12 @@ import java.util.Scanner;
 public class Listings {
     private static final Scanner sc = new Scanner(System.in);
 
-    public static void readListings(Connection con, int hostId) {
+    public static void readListings(Connection con) {
         try {
-            String query = "";
+            String query = "SELECT * FROM Listings";
 
             // if renter is requesting to see all listings, hostID = -1
-            if (hostId == -1) {
-                query = "SELECT * FROM Listings";
-            } else {
-                query = "SELECT * FROM Listings WHERE host_id = " + hostId;
-            }
+            if (Users.isHost) query += " WHERE host_id = " + Users.userId;
 
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(query);
@@ -92,6 +88,11 @@ public class Listings {
             e.printStackTrace();
         }
         return price;
+    }
+
+    public static void updateListing(Connection con) {
+        App.clearScreen();
+        Listings.readListings(con);
     }
 
     public static void createListing(Connection con, int hostID) {

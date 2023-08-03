@@ -11,6 +11,7 @@ import java.util.regex.Pattern;
 public class Users {
     private static final Scanner sc = new Scanner(System.in);
     public static int userId = -1;
+    public static boolean isHost = false;
         
     public static void createUser(Connection con){
         try {
@@ -138,7 +139,7 @@ public class Users {
             int renterID = -1;
 
             if (isValidUser){
-                boolean isHost = rs2.next();
+                isHost = rs2.next();
                 if (isHost) {
                     hostID = rs2.getInt("id");
                     System.out.print("\033[H\033[2J");
