@@ -69,6 +69,7 @@ public class Listings {
             App.clearScreen();
             System.out.printf("%-10s %-10s %-10s %-10s %-20s %-10s %-10s\n", "ListingID", "HostID", "Type", "Price",
                     "Address", "Latitude", "Longitude");
+            System.out.println("--------------------------------------------------------------------------------------");
             rs.next();
             int host = rs.getInt("host_id");
             int listing = rs.getInt("id");
@@ -93,6 +94,57 @@ public class Listings {
     public static void updateListing(Connection con) {
         App.clearScreen();
         Listings.readListings(con);
+        System.out.println("Enter listing id: ");
+        int id = sc.nextInt();
+        sc.nextLine();
+        viewListing(con, id);
+        System.out.println("\n1. Edit price");
+        System.out.println("2. Edit availability");
+        int choice = sc.nextInt();
+        sc.nextLine();
+
+        switch(choice) {
+            case 1:
+                System.out.println("Enter new price: ");
+                double newPrice = sc.nextInt();
+                updateListingPrice(con, id, newPrice);
+            case 2:
+                Bookings.getAvailability(con, id);
+                System.out.println("\n1. Book off date range");
+                System.out.println("2. Cancel bookings");
+                choice = sc.nextInt();
+                if(choice == 1) Bookings.createBooking(con, id);
+                if(choice == 2) Bookings.cancelBooking(con);
+                return;
+            default:
+                return;
+        }
+    }
+
+    public static void updateListingPrice(Connection con, int listingId, double newPrice) {
+        try {
+            String query = "UPDATE Listings SET price = ? WHERE id = ?;";
+            PreparedStatement stmt = con.prepareStatement(query);
+
+            stmt.setDouble(1, newPrice);
+            stmt.setInt(2, listingId);
+
+            int rowsAffected = stmt.executeUpdate();
+            stmt.close();
+
+            if (rowsAffected > 0) {
+                System.out.println("Updated pricing successfully!");
+            } else {
+                System.out.println("Failed, please try again");
+            }
+
+            System.out.println("\nEnter to continue...");
+            sc.nextLine();
+
+            return;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void createListing(Connection con, int hostID) {

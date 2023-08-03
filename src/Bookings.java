@@ -19,9 +19,11 @@ public class Bookings {
 
     BookingStatus star = BookingStatus.CANCELLED_BY_HOST;
 
-    public static void createBooking(Connection con) {
-        System.out.println("Enter the listing id: ");
-        int id = sc.nextInt();
+    public static void createBooking(Connection con, int id) {
+        if(!Users.isHost) {
+            System.out.println("Enter the listing id: ");
+            id = sc.nextInt();
+        }
 
         float pricing = Listings.viewListing(con, id);
         getAvailability(con, id);
@@ -57,7 +59,7 @@ public class Bookings {
 
         System.out.println("\n\n" + "SUMMARY\n");
         System.out.println(nights + " nights");
-        System.out.println("$" + pricing * nights);
+        if(!Users.isHost) System.out.println("$" + pricing * nights);
 
         System.out.println("\nConfirm booking (y/n):");
         String confirm = sc.nextLine();
@@ -83,9 +85,14 @@ public class Bookings {
             stmt.close();
 
             if (rowsAffected > 0) {
-                System.out.println("Added your booking successfully!");
+                if(!Users.isHost)
+                    System.out.println("Successfully booked off the days!");
+                else
+                    System.out.println("Added your booking successfully!");
             } else {
                 System.out.println("Failed, please try again");
+                if(!Users.isHost)
+                    System.out.println("You may have to cancel some bookings");
             }
             System.out.println("\nEnter to continue...");
             sc.nextLine();
@@ -194,7 +201,6 @@ public class Bookings {
             ResultSet rs = stmt.executeQuery();
 
             App.clearScreen();
-            System.out.println(query);
             System.out.println("Bookings:");
             SimpleDateFormat parser = new SimpleDateFormat("dd MMMM YYYY");
 

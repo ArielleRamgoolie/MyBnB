@@ -28,6 +28,10 @@ public class Menus {
                 App.clearScreen();
             	Listings.createListing(con, hostID);
                 hostMenu(con, hostID);
+            case 3:
+                // create listings
+            	Listings.updateListing(con);
+                hostMenu(con, hostID);
             case 4:
                 Bookings.cancelBooking(con);
                 App.clearScreen();
@@ -73,7 +77,7 @@ public class Menus {
                 App.clearScreen();
                 renterMenu(con, renterID);
             case 3:
-                Bookings.createBooking(con);
+                Bookings.createBooking(con,-1);
                 App.clearScreen();
                 renterMenu(con, renterID);
             case 4:
