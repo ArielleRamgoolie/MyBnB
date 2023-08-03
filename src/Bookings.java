@@ -12,6 +12,13 @@ import java.util.concurrent.TimeUnit;
 public class Bookings {
     private static final Scanner sc = new Scanner(System.in);
 
+    private static final int ACTIVE = 1;
+    private static final int CANCELLED_BY_HOST = 2;
+    private static final int CANCELLED_BY_RENTER = 3;
+    private static final int BLOCKED_BY_HOST = 4;
+
+    BookingStatus star = BookingStatus.CANCELLED_BY_HOST;
+
     public static void createBooking(Connection con) {
         System.out.println("Enter the listing id: ");
         int id = sc.nextInt();
@@ -90,7 +97,9 @@ public class Bookings {
     }
 
     public static void getAvailability(Connection con, int listingId) {
-        String query = "SELECT * FROM Bookings WHERE listing_id = ? AND CURDATE() < end_date ORDER BY start_date;";
+        String query = "SELECT * FROM Bookings WHERE listing_id = ? AND CURDATE() < end_date AND (status = "
+                + ACTIVE + " OR status = "
+                + BLOCKED_BY_HOST + ") ORDER BY start_date;";
         try {
 
             PreparedStatement stmt = con.prepareStatement(query);
@@ -113,7 +122,12 @@ public class Bookings {
                         formatter.format(rs.getDate("start_date", null)));
                 start = rs.getDate("end_date", null);
             }
-            System.out.println("From " + formatter.format(start) + " onwards");
+            try {
+                if (!start.equals(formatter.parse("31 December 9999")))
+                    System.out.println("From " + formatter.format(start) + " onwards");
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             System.out
                     .println("--------------------------------------------------------------------------------------");
             rs.close();
@@ -129,10 +143,42 @@ public class Bookings {
         return false;
     }
 
+    public static void cancelBooking(Connection con) {
+        readBookings(con, true);
+        System.out.println("Select booking id from above: ");
+        int id = sc.nextInt();
+
+        try {
+
+            String query = "UPDATE Bookings SET status = ? WHERE id = ?;";
+            PreparedStatement stmt = con.prepareStatement(query);
+
+            stmt.setInt(1, CANCELLED_BY_RENTER);
+            stmt.setInt(2, id);
+
+            int rowsAffected = stmt.executeUpdate();
+            stmt.close();
+
+            if (rowsAffected > 0) {
+                System.out.println("Cancelled your booking successfully!");
+            } else {
+                System.out.println("Failed, please try again");
+            }
+            sc.nextLine();
+            System.out.println("\nEnter to continue...");
+            sc.nextLine();
+            return;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void readBookings(Connection con, boolean future) {
         try {
 
-            String query = "SELECT * FROM Bookings JOIN Listings on Bookings.listing_id = Listings.id where start_date" + (future ? ">": "<") +"curdate() AND renter_id = ? ORDER BY start_date;";
+            String query = "SELECT * FROM Bookings JOIN Listings on Bookings.listing_id = Listings.id where start_date"
+                    + (future ? ">" : "<") + "curdate() AND renter_id = ? AND status = " + ACTIVE + " ORDER BY start_date;";
             PreparedStatement stmt = con.prepareStatement(query);
 
             stmt.setInt(1, Users.userId);
@@ -143,23 +189,25 @@ public class Bookings {
 
             System.out.println("Bookings:");
             SimpleDateFormat parser = new SimpleDateFormat("dd MMMM YYYY");
-            
-            System.out.printf("%-10s %-10s %-20s $ %-20s %-20s %-20s %-20s\n", "ID", "Type", "Address", "Cost", "Nights", "Check-in", "Check-out");
-            System.out.println("--------------------------------------------------------------------------------------------------------------------------------");
+
+            System.out.printf("%-10s %-10s %-20s $ %-20s %-20s %-20s %-20s\n", "ID", "Type", "Address", "Cost",
+                    "Nights", "Check-in", "Check-out");
+            System.out.println(
+                    "--------------------------------------------------------------------------------------------------------------------------------");
             while (rs.next()) {
-                
-                System.out.printf("%-10s %-10s %-20s $ %-20s %-20s %-20s %-20s\n", 
-                rs.getInt("id"), 
-                rs.getString("type").toUpperCase(), 
-                rs.getString("address"), 
-                rs.getDouble("total_cost"), 
-                rs.getInt("num_nights"), 
-                parser.format(rs.getDate("start_date")),
-                parser.format(rs.getDate("end_date")));
+
+                System.out.printf("%-10s %-10s %-20s $ %-20s %-20s %-20s %-20s\n",
+                        rs.getInt("id"),
+                        rs.getString("type").toUpperCase(),
+                        rs.getString("address"),
+                        rs.getDouble("total_cost"),
+                        rs.getInt("num_nights"),
+                        parser.format(rs.getDate("start_date")),
+                        parser.format(rs.getDate("end_date")));
 
             }
             // System.out
-            //         .println("--------------------------------------------------------------------------------------");
+            // .println("--------------------------------------------------------------------------------------");
 
             rs.close();
             stmt.close();

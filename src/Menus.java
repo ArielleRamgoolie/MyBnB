@@ -40,10 +40,11 @@ public class Menus {
         System.out.println("1. View all listings");
         System.out.println("2. Sort listings");
         System.out.println("3. Create a booking");
-        System.out.println("4. See my booking future bookings");
-        System.out.println("5. See my booking past bookings");
-        System.out.println("6. Delete my account and cancel all bookings");
-        System.out.println("7. Exit");
+        System.out.println("4. Cancel a booking");
+        System.out.println("5. See my booking future bookings");
+        System.out.println("6. See my booking past bookings");
+        System.out.println("7. Delete my account and cancel all bookings");
+        System.out.println("8. Exit");
 
         int choice = sc.nextInt();
         switch (choice) {
@@ -61,10 +62,14 @@ public class Menus {
                 App.clearScreen();
                 renterMenu(con, renterID);
             case 4:
-                Bookings.readBookings(con, true);
+                Bookings.cancelBooking(con);
                 App.clearScreen();
                 renterMenu(con, renterID);
             case 5:
+                Bookings.readBookings(con, true);
+                App.clearScreen();
+                renterMenu(con, renterID);
+            case 6:
                 Bookings.readBookings(con, false);
                 App.clearScreen();
                 renterMenu(con, renterID);
