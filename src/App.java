@@ -33,7 +33,8 @@ public class App {
         System.out.println("Welcome to our Airbnb App!");
         System.out.println("1. Login");
         System.out.println("2. Register");
-        System.out.println("3. Exit");
+        System.out.println("3. Admin");
+        System.out.println("4. Exit");
 
         int choice = sc.nextInt();
         switch (choice) {
@@ -44,6 +45,14 @@ public class App {
                 Users.createUser(con);
                 break;
             case 3:
+                // Reports.BookingsPer(con, true);
+                // Reports.BookingsPer(con, false);
+                // Reports.ListingsPer(con, 1);
+                // Reports.ListingsPer(con, 2);
+                // Reports.ListingsPer(con, 3);
+                // Reports.RankHosts(con);
+                break;
+            case 4:
                 clearScreen();
                 System.out.println("Exiting MyBnB. Goodbye!");
                 break;
