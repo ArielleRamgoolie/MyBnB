@@ -6,6 +6,7 @@ public class Menus {
     
     public static void hostMenu(Connection con, int hostID) {
         // Provide a basic text interface to interact with app
+        App.clearScreen();
         System.out.println("Welcome Host! What would you like to do today?");
         System.out.println("1. View my listings");
         System.out.println("2. Create new listing");
@@ -36,39 +37,35 @@ public class Menus {
 
     public static void renterMenu(Connection con, int renterID) {
         // Provide a basic text interface to interact with app
+        App.clearScreen();
         System.out.println("Welcome Renter! What would you like to do today?");
         System.out.println("1. View all listings");
-        System.out.println("2. Sort listings");
-        System.out.println("3. Create a booking");
-        System.out.println("4. See my booking future bookings");
-        System.out.println("5. See my booking past bookings");
-        System.out.println("6. Delete my account and cancel all bookings");
-        System.out.println("7. Exit");
+        System.out.println("2. Create a booking");
+        System.out.println("3. See my booking future bookings");
+        System.out.println("4. See my booking past bookings");
+        System.out.println("5. Delete my account and cancel all bookings");
+        System.out.println("6. Exit");
 
         int choice = sc.nextInt();
         switch (choice) {
             case 1:
                 App.clearScreen();
             	Listings.readListings(con, -1);
+                searchMenu(con);
                 renterMenu(con, renterID);
             case 2:
-                App.clearScreen();
-            	sortingMenu(con);
-                App.clearScreen();
-                renterMenu(con, renterID);
-            case 3:
                 Bookings.createBooking(con);
                 App.clearScreen();
                 renterMenu(con, renterID);
-            case 4:
+            case 3:
                 Bookings.readBookings(con, true);
                 App.clearScreen();
                 renterMenu(con, renterID);
-            case 5:
+            case 4:
                 Bookings.readBookings(con, false);
                 App.clearScreen();
                 renterMenu(con, renterID);
-            case 7:
+            case 6:
                 System.out.println("Exiting MyBnB. Goodbye!");
                 break;
             default:
@@ -77,16 +74,19 @@ public class Menus {
         }
     }
 
-    public static void sortingMenu(Connection con){
-        System.out.println("What would you like to sort listings by?");
-        System.out.println("1. Sort by price (ascending)");
-        System.out.println("2. Sort by price (decending)");
-        System.out.println("3. Listings above a certain price");
-        System.out.println("4. Listings below a certain price");
-        System.out.println("5. Sort by type of listing");
-        System.out.println("6. Sort by type of distance (longitude and latitude)");
-        System.out.println("7. Sort by multiple filters");
-        System.out.println("8. Exit sort");
+    public static void searchMenu(Connection con){
+        System.out.println("Would you like to search listings? (Y/N)");
+        String ans = sc.next();
+        if (ans.equals("Y")){
+            System.out.println("Which of the following would you like to search by:");
+            System.out.println("1. Rank Listings by prices (Ascending)");
+            System.out.println("2. Rank Listings by prices (Descending)");
+            System.out.println("3. Search by distance (longitude and latitude)");
+            System.out.println("4. Search by postal code");
+            System.out.println("5. Search by address");
+            System.out.println("6. Advance Search with multiple filters");
+            System.out.println("7. Cancel search, return to menu");
+        }
 
         int choice = sc.nextInt();
         switch (choice) {
