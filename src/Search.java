@@ -3,6 +3,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -262,11 +263,10 @@ public class Search {
                     results.add(listingProperties);
                 }
             }
-
+            // TO DO: we must sort the results too
             // print the results to user 
             App.clearScreen();
             System.out.printf("All Listings");
-            System.out.println();
             System.out.println();
             System.out.println("--------------------------------------------------------------------------------------");
             System.out.printf("%-10s %-10s %-10s %-10s %-20s %-10s %-10s\n", "ListingxxID", "HostID", "Type", "Price","Address", "Latitude", "Longitude");
@@ -288,16 +288,105 @@ public class Search {
     public static double findDistance(double listingLat, double listingLong, double userLat, double userLong){
         // Use Haversine Formula
         double radiusEarth = 6371.0;
-        double convDegToRad = Math.PI / 180.0; 
 
-        double lat = ((userLat - listingLat) * convDegToRad);
-        double lon = ((userLong - listingLong) * convDegToRad);
+        double lat = ((userLat - listingLat) * ( Math.PI / 180.0));
+        double lon = ((userLong - listingLong) * ( Math.PI / 180.0));
 
-        double first = Math.sin(lat / 2) * Math.sin(lat / 2) + Math.cos(listingLat * convDegToRad) * Math.cos(userLat * convDegToRad)* Math.sin(lon / 2) * Math.sin(listingLong / 2);
+        double first = Math.sin(lat / 2) * Math.sin(lat / 2) + Math.cos(listingLat * ( Math.PI / 180.0)) * Math.cos(userLat * ( Math.PI / 180.0))* Math.sin(lon / 2) * Math.sin(listingLong / 2);
 
         double second = 2 * Math.atan2(Math.sqrt(first), Math.sqrt(1 - first));
 
         return radiusEarth * second;
+    }
+
+    public static void addressSerch(Connection con){
+        try{
+            System.out.println("Please enter the exact address you would like to search for:");
+            String address = sc.nextLine();
+
+            // query listings
+            String query = "SELECT * FROM Listings WHERE address = '" + address + "'"; 
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+
+            App.clearScreen();
+            System.out.printf("All %s Listings", address);
+            System.out.println();
+            System.out.println();
+            System.out.println("--------------------------------------------------------------------------------------");
+            System.out.printf("%-10s %-10s %-10s %-10s %-20s %-10s %-10s\n", "ListingID", "HostID", "Type", "Price","Address", "Latitude", "Longitude");
+            System.out.println("--------------------------------------------------------------------------------------");
+            while (rs.next()) {
+                int host = rs.getInt("host_id");
+                int listing = rs.getInt("id");
+                String types = rs.getString("type");
+                float price = rs.getFloat("price");
+                // address = rs.getString("address");
+                float longitude = rs.getFloat("longitude");
+                float latitude = rs.getFloat("latitude");
+
+                System.out.printf("%-10d %-10d %-10s %-10.2f %-20s %-10.2f %-10.2f\n", listing, host, types, price, address, latitude, longitude);
+            }
+            System.out.println("--------------------------------------------------------------------------------------");
+
+            rs.close();
+            stmt.close();
+
+            // Wait for user input (pressing Enter) before continuing
+            System.out.println("\nPress Enter to continue...");
+            sc.nextLine();
+
+            return;
+        
+        } catch (SQLException e) {
+            e.printStackTrace(); 
+        }
+    
+    }
+
+    public static void postalCode(Connection con){
+        try{
+            System.out.println("Please enter the postal code you would like to search for:");
+            String pc = sc.nextLine();
+
+            // query listings
+            String query = "SELECT * FROM Listings WHERE postal_code = '" + pc + "'"; 
+            Statement stmt = con.createStatement();
+            ResultSet rs = stmt.executeQuery(query);
+
+            App.clearScreen();
+            System.out.printf("All %s Listings", pc);
+            System.out.println();
+            System.out.println();
+            System.out.println("--------------------------------------------------------------------------------------------------");
+            System.out.printf("%-10s %-10s %-10s %-10s %-10s %-20s %-10s %-10s\n", "ListingID", "HostID", "Type", "Price",  "Postal_Code", "Address", "Latitude", "Longitude");
+            System.out.println("--------------------------------------------------------------------------------------------------");
+            while (rs.next()) {
+                int host = rs.getInt("host_id");
+                int listing = rs.getInt("id");
+                String types = rs.getString("type");
+                float price = rs.getFloat("price");
+                String address = rs.getString("address");
+                float longitude = rs.getFloat("longitude");
+                float latitude = rs.getFloat("latitude");
+
+                System.out.printf("%-10d %-10d %-10s %-10.2f %-10s %-20s %-10.2f %-10.2f\n", listing, host, types, price, pc, address, latitude, longitude);
+            }
+            System.out.println("-------------------------------------------------------------------------------------------------------");
+
+            rs.close();
+            stmt.close();
+
+            // Wait for user input (pressing Enter) before continuing
+            System.out.println("\nPress Enter to continue...");
+            sc.nextLine();
+
+            return;
+        
+        } catch (SQLException e) {
+            e.printStackTrace(); 
+        }
+    
     }
     
 }

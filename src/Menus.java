@@ -127,9 +127,11 @@ public class Menus {
                 break;
             case 2:
                 App.clearScreen();
+                Search.postalCode(con);
                 break;
             case 3:
                 App.clearScreen();
+                Search.addressSerch(con);
                 break;
             case 4:
                 App.clearScreen();
