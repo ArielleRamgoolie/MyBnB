@@ -5,7 +5,7 @@ public class Menus {
     private static final Scanner sc = new Scanner(System.in);
     
     public static void hostMenu(Connection con, int hostID) {
-        // Provide a basic text interface to interact with app
+        App.clearScreen();
         System.out.println("Welcome Host! What would you like to do today?");
         System.out.println("1. View my listings");
         System.out.println("2. Create new listing");
@@ -54,7 +54,7 @@ public class Menus {
     }
 
     public static void renterMenu(Connection con, int renterID) {
-        // Provide a basic text interface to interact with app
+        App.clearScreen();
         System.out.println("Welcome Renter! What would you like to do today?");
         System.out.println("1. View all listings");
         System.out.println("2. Sort listings");
@@ -70,12 +70,11 @@ public class Menus {
             case 1:
                 App.clearScreen();
             	Listings.readListings(con);
+                searchMenu(con);
                 renterMenu(con, renterID);
             case 2:
-                App.clearScreen();
-            	sortingMenu(con);
-                App.clearScreen();
-                renterMenu(con, renterID);
+                System.out.println("sorting is currently being updated");
+                break;
             case 3:
                 Bookings.createBooking(con,-1);
                 App.clearScreen();
@@ -92,7 +91,7 @@ public class Menus {
                 Bookings.readBookings(con, false);
                 App.clearScreen();
                 renterMenu(con, renterID);
-            case 7:
+            case 8:
                 System.out.println("Exiting MyBnB. Goodbye!");
                 break;
             default:
@@ -101,48 +100,47 @@ public class Menus {
         }
     }
 
-    public static void sortingMenu(Connection con){
-        System.out.println("What would you like to sort listings by?");
-        System.out.println("1. Sort by price (ascending)");
-        System.out.println("2. Sort by price (decending)");
-        System.out.println("3. Listings above a certain price");
-        System.out.println("4. Listings below a certain price");
-        System.out.println("5. Sort by type of listing");
-        System.out.println("6. Sort by type of distance (longitude and latitude)");
-        System.out.println("7. Sort by multiple filters");
-        System.out.println("8. Exit sort");
+    public static void searchMenu(Connection con){
+        System.out.println("Would you like to search listings? (Y/N)");
+        sc.nextLine();
+        String res = sc.nextLine();
+
+        if (res.equals("N")){
+            System.out.println("Press Enter to Exit...");
+            sc.nextLine();
+            return; 
+        } else if (res.equals("Y")) {
+            System.out.println("1. Search by distance");
+            System.out.println("2. Search by postal code");
+            System.out.println("3. Search by address");
+            System.out.println("4. Rank prices in ascending order");
+            System.out.println("5. Rank prices in descending order");
+            System.out.println("6. Advance search (search by multiple filters at once)");
+            System.out.println("7. Exit search");
+        }
 
         int choice = sc.nextInt();
         switch (choice) {
             case 1:
                 App.clearScreen();
-            	Sorts.ascendingPrices(con);
+                Search.distance(con);
                 break;
             case 2:
                 App.clearScreen();
-            	Sorts.decendingPrices(con);
                 break;
             case 3:
                 App.clearScreen();
-                System.out.println("Enter a min price for the listings you would like to see");
-                int max = sc.nextInt();
-            	Sorts.maxListing(max, con);
                 break;
             case 4:
                 App.clearScreen();
-                System.out.println("Enter a max price for the listings you would like to see");
-                int min = sc.nextInt();
-            	Sorts.minListing(min, con);
+            	Search.ascendingPrices(con);
                 break;
             case 5:
                 App.clearScreen();
-                System.out.println("Which of the following types of listing you you like to see?");
-                System.out.println("house");
-                System.out.println("apartment");
-                System.out.println("guesthouse");
-                System.out.println("hotel");
-                String type = sc.next();
-            	Sorts.typeSort(type, con);
+            	Search.decendingPrices(con);
+                break;
+            case 7:
+                App.clearScreen();
                 break;
             default:
                 System.out.println("Invalid choice or Feature not yet implemented. Please try again.");
