@@ -57,13 +57,12 @@ public class Menus {
         App.clearScreen();
         System.out.println("Welcome Renter! What would you like to do today?");
         System.out.println("1. View all listings");
-        System.out.println("2. Sort listings");
-        System.out.println("3. Create a booking");
-        System.out.println("4. Cancel a booking");
-        System.out.println("5. See my booking future bookings");
-        System.out.println("6. See my booking past bookings");
-        System.out.println("7. Delete my account and cancel all bookings");
-        System.out.println("8. Exit");
+        System.out.println("2. Create a booking");
+        System.out.println("3. Cancel a booking");
+        System.out.println("4. See my booking future bookings");
+        System.out.println("5. See my booking past bookings");
+        System.out.println("6. Delete my account and cancel all bookings");
+        System.out.println("7. Exit");
 
         int choice = sc.nextInt();
         switch (choice) {
@@ -73,25 +72,22 @@ public class Menus {
                 searchMenu(con);
                 renterMenu(con, renterID);
             case 2:
-                System.out.println("sorting is currently being updated");
-                break;
-            case 3:
                 Bookings.createBooking(con,-1);
                 App.clearScreen();
                 renterMenu(con, renterID);
-            case 4:
+            case 3:
                 Bookings.cancelBooking(con);
                 App.clearScreen();
                 renterMenu(con, renterID);
-            case 5:
+            case 4:
                 Bookings.readBookings(con, true);
                 App.clearScreen();
                 renterMenu(con, renterID);
-            case 6:
+            case 5:
                 Bookings.readBookings(con, false);
                 App.clearScreen();
                 renterMenu(con, renterID);
-            case 8:
+            case 7:
                 System.out.println("Exiting MyBnB. Goodbye!");
                 break;
             default:
@@ -110,43 +106,38 @@ public class Menus {
             sc.nextLine();
             return; 
         } else if (res.equals("Y")) {
-            System.out.println("1. Search by distance");
-            System.out.println("2. Search by postal code");
-            System.out.println("3. Search by address");
-            System.out.println("4. Rank prices in ascending order");
-            System.out.println("5. Rank prices in descending order");
-            System.out.println("6. Advance search (search by multiple filters at once)");
-            System.out.println("7. Exit search");
-        }
-
-        int choice = sc.nextInt();
-        switch (choice) {
-            case 1:
-                App.clearScreen();
-                Search.distance(con);
-                break;
-            case 2:
-                App.clearScreen();
-                Search.postalCode(con);
-                break;
-            case 3:
-                App.clearScreen();
-                Search.addressSerch(con);
-                break;
-            case 4:
-                App.clearScreen();
-            	Search.ascendingPrices(con);
-                break;
-            case 5:
-                App.clearScreen();
-            	Search.decendingPrices(con);
-                break;
-            case 7:
-                App.clearScreen();
-                break;
-            default:
-                System.out.println("Invalid choice or Feature not yet implemented. Please try again.");
-                return;
+            System.out.println("1. Apply filters to search (price range, availability dates, amenities)");
+            System.out.println("2. Regular search (distance, postal code, address)");
+            System.out.println("3. Advance search (search by multiple filters at once)");
+            System.out.println("4. Exit search");
+        
+            int choice = sc.nextInt();
+            sc.nextLine();
+            switch (choice) {
+                case 2: 
+                    System.out.println("Enter the type of search you'd like to conduct: (eg. distance, postal code, address)");
+                    String search = sc.nextLine();
+                    if (search.equals("distance")){
+                        Search.distance(con);
+                    }
+                    if (search.equals("postal code")){
+                        Search.postalCode(con);
+                    }
+                    if (search.equals("address")){
+                        Search.addressSerch(con);
+                    }
+                    break; 
+                case 3:
+                    App.clearScreen();
+                    Search.postalCode(con);
+                    break;
+                case 4:
+                    App.clearScreen();
+                    break;
+                default:
+                    System.out.println("Invalid choice or Feature not yet implemented. Please try again.");
+                    return;
+                }
         }
     }
 }
