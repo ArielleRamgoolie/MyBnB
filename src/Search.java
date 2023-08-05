@@ -350,7 +350,7 @@ public class Search {
             String pc = sc.nextLine();
 
             // query listings
-            String query = "SELECT * FROM Listings WHERE postal_code = '" + pc + "'"; 
+            String query = "SELECT * FROM Listings WHERE postal_code = '" + pc + "' OR LEFT(postal_code, 2) = LEFT('" + pc +"', 2)"; 
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(query);
 
@@ -366,11 +366,12 @@ public class Search {
                 int listing = rs.getInt("id");
                 String types = rs.getString("type");
                 float price = rs.getFloat("price");
+                String actual_pc = rs.getString("postal_code");
                 String address = rs.getString("address");
                 float longitude = rs.getFloat("longitude");
                 float latitude = rs.getFloat("latitude");
 
-                System.out.printf("%-10d %-10d %-10s %-10.2f %-10s %-20s %-10.2f %-10.2f\n", listing, host, types, price, pc, address, latitude, longitude);
+                System.out.printf("%-10d %-10d %-10s %-10.2f %-10s %-20s %-10.2f %-10.2f\n", listing, host, types, price, actual_pc, address, latitude, longitude);
             }
             System.out.println("-------------------------------------------------------------------------------------------------------");
 
