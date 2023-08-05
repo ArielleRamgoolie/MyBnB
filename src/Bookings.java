@@ -16,8 +16,6 @@ public class Bookings {
     private static final int CANCELLED_BY_RENTER = 3;
     private static final int BLOCKED_BY_HOST = 4;
 
-    BookingStatus star = BookingStatus.CANCELLED_BY_HOST;
-
     public static void createBooking(Connection con, int id) {
         if(!Users.isHost) {
             System.out.println("Enter the listing id: ");

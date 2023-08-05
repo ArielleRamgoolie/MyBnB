@@ -42,12 +42,10 @@ INSERT INTO `MyBnB`.`Listings` (`id`, `host_id`, `type`, `longitude`, `latitude`
 INSERT INTO `MyBnB`.`Listings` (`id`, `host_id`, `type`, `longitude`, `latitude`, `address`, `price`) VALUES (null, 'hotel', '3', '77.7', '43.4', 'scarborough gulf club', '100');
 INSERT INTO `MyBnB`.`Listings` (`id`, `host_id`, `type`, `longitude`, `latitude`, `address`, `price`) VALUES (null, 'apartment', '3', '66.7', '44.4', 'military trail', '50');
 
-CREATE TABLE Amenities (
-    id INT NOT NULL AUTO_INCREMENT,
-    name VARCHAR(255) NOT NULL,
-    type VARCHAR(255) NOT NULL,
+CREATE TABLE ListingAmenities (
+    amenity_id INT NOT NULL,
     listing_id INT NOT NULL,
-    PRIMARY KEY (id),
+    FOREIGN KEY (amenity_id) REFERENCES Amenities(id)
     FOREIGN KEY (listing_id) REFERENCES Listings(id)
 );
 
@@ -101,3 +99,39 @@ INSERT INTO `MyBnB`.`listings` (`host_id`, `type`, `longitude`, `latitude`, `add
 INSERT INTO `MyBnB`.`listings` (`host_id`, `type`, `longitude`, `latitude`, `address`, `price`, `city`, `postal_code`, `country`) VALUES ('2', 'hotel', '100', '100', 'colombo road', '300', 'Colombo', 'L9N B3L', 'Sri Lanka');
 
 UPDATE `MyBnB`.`users` SET `username` = 'mListings' WHERE (`id` = '320');
+
+CREATE TABLE `MyBnB`.`Amenities` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  `type` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
+  UNIQUE INDEX `name_UNIQUE` (`name` ASC) VISIBLE);
+
+INSERT INTO `MyBnB`.`amenities` (`name`, `type`) VALUES ('Wifi', 'Essential');
+INSERT INTO `MyBnB`.`amenities` (`name`, `type`) VALUES ('Washer', 'Essential');
+INSERT INTO `MyBnB`.`amenities` (`name`, `type`) VALUES ('Dryer', 'Essential');
+INSERT INTO `MyBnB`.`amenities` (`name`, `type`) VALUES ('Kitchen', 'Essential');
+INSERT INTO `MyBnB`.`amenities` (`name`, `type`) VALUES ('Air conditioning', 'Essential');
+INSERT INTO `MyBnB`.`amenities` (`name`, `type`) VALUES ('Heating', 'Essential');
+INSERT INTO `MyBnB`.`amenities` (`name`, `type`) VALUES ('Dedicated workspace', 'Essential');
+INSERT INTO `MyBnB`.`amenities` (`name`, `type`) VALUES ('TV', 'Essential');
+INSERT INTO `MyBnB`.`amenities` (`name`, `type`) VALUES ('Hair dryer', 'Essential');
+INSERT INTO `MyBnB`.`amenities` (`name`, `type`) VALUES ('Iron', 'Essential');
+
+INSERT INTO `MyBnB`.`amenities` (`name`, `type`) VALUES ('Pool', 'Features');
+INSERT INTO `MyBnB`.`amenities` (`name`, `type`) VALUES ('Hot tub', 'Features');
+INSERT INTO `MyBnB`.`amenities` (`name`, `type`) VALUES ('Free parking', 'Features');
+INSERT INTO `MyBnB`.`amenities` (`name`, `type`) VALUES ('EV charger', 'Features');
+INSERT INTO `MyBnB`.`amenities` (`name`, `type`) VALUES ('Crib', 'Features');
+INSERT INTO `MyBnB`.`amenities` (`name`, `type`) VALUES ('Gym', 'Features');
+INSERT INTO `MyBnB`.`amenities` (`name`, `type`) VALUES ('BBQ grill', 'Features');
+INSERT INTO `MyBnB`.`amenities` (`name`, `type`) VALUES ('Breakfast', 'Features');
+INSERT INTO `MyBnB`.`amenities` (`name`, `type`) VALUES ('Indoor fireplace', 'Features');
+INSERT INTO `MyBnB`.`amenities` (`name`, `type`) VALUES ('Smoking allowed', 'Features');
+
+INSERT INTO `MyBnB`.`amenities` (`name`, `type`) VALUES ('Beachfront', 'Location');
+INSERT INTO `MyBnB`.`amenities` (`name`, `type`) VALUES ('Waterfront', 'Location');
+
+INSERT INTO `MyBnB`.`amenities` (`name`, `type`) VALUES ('Smoke alarm', 'Safety');
+INSERT INTO `MyBnB`.`amenities` (`name`, `type`) VALUES ('Carbon monoxide alarm', 'Safety');

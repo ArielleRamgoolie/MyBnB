@@ -1,6 +1,0 @@
-public enum BookingStatus {
-  ACTIVE,
-  CANCELLED_BY_HOST,
-  CANCELLED_BY_RENTER,
-  BLOCKED_BY_HOST
-}
