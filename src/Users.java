@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 public class Users {
     private static final Scanner sc = new Scanner(System.in);
-    public static int userId = -1;
+    public static int userId = 1;
     public static boolean isHost = false;
         
     public static void createUser(Connection con){

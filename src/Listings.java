@@ -55,7 +55,7 @@ public class Listings {
         }
     }
 
-    public static float viewListing(Connection con, int listingId) {
+    public static void viewListing(Connection con, int listingId) {
         float price = -1;
         try {
 
@@ -85,10 +85,112 @@ public class Listings {
             rs.close();
             stmt.close();
 
+            System.out.println("\n1. See reviews");
+            System.out.println("2. See amenities");
+            System.out.println("3. See availability");
+            System.out.println("4. Make booking");
+            System.out.println("5. Return to menu");
+        int choice = sc.nextInt();
+        sc.nextLine();
+        switch (choice) {
+            case 1:
+                // get listings
+                Listings.viewReviews(con, 1);
+                break;
+            case 2:
+                // create listings
+                Listings.viewAmenities(con, 1);
+                break;
+            case 3:
+                Bookings.getAvailability(con, 1);
+                break;
+            case 4:
+                Bookings.createBooking(con, listingId, price);
+            case 5:
+                return;
+            default:
+                break;
+        }
+        Listings.viewListing(con, listingId);
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return price;
+
+    }
+
+    public static void viewReviews(Connection con, int listingId) {
+        try {
+
+            String query = "SELECT CONCAT(Users.first_name, ' ', Users.last_name) as renter_name, Rating, comment, time\n" + //
+                    "FROM ListingComment\n" + //
+                    "JOIN Users on Users.id = ListingComment.FromUser\n" + //
+                    "WHERE ListingID = ?;";
+            PreparedStatement stmt = con.prepareStatement(query);
+            stmt.setInt(1, listingId);
+            System.out.print(query + listingId);
+
+            ResultSet rs = stmt.executeQuery();
+
+            App.clearScreen();
+            System.out.println("Reviews");
+            System.out.println("--------------------------------------------------------------------------------------");
+            while(rs.next()) {
+                String name = rs.getString("renter_name");
+                int rating = rs.getInt("rating");
+                String comment = rs.getString("comment");
+                java.sql.Timestamp time = rs.getTimestamp("time");
+                
+                System.out.printf("%-60s %-40s\n", name, time);
+                System.out.println(rating + "/5");
+                System.out.println(comment);
+
+                System.out.println("--------------------------------------------------------------------------------------");
+            }
+
+            rs.close();
+            stmt.close();
+
+            System.out.println("\nPress Enter to return...");
+            sc.nextLine();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void viewAmenities(Connection con, int listingId) {
+        try {
+
+            String query = "Select distinct Amenities.*\n" + //
+                    "from Amenities\n" + //
+                    "join ListingAmenities on amenity_id = Amenities.id\n" + //
+                    "WHERE listing_id = ?";
+            PreparedStatement stmt = con.prepareStatement(query);
+            stmt.setInt(1, listingId);
+            System.out.print(query + listingId);
+
+            ResultSet rs = stmt.executeQuery();
+
+            App.clearScreen();
+            System.out.printf("%-30s %-30s", "Amenity", "Type");
+            System.out.println("\n------------------------------------------");
+            while(rs.next()) {
+                String name = rs.getString("name");
+                String type = rs.getString("type");
+                
+                System.out.printf("%-30s %-30s\n", name, type);
+            }
+
+            rs.close();
+            stmt.close();
+
+            System.out.println("\nPress Enter to return...");
+            sc.nextLine();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void updateListing(Connection con) {
@@ -113,7 +215,7 @@ public class Listings {
                 System.out.println("\n1. Book off date range");
                 System.out.println("2. Cancel bookings");
                 choice = sc.nextInt();
-                if(choice == 1) Bookings.createBooking(con, id);
+                if(choice == 1) Bookings.createBooking(con, id, 0);
                 if(choice == 2) Bookings.cancelBooking(con);
                 return;
             default:

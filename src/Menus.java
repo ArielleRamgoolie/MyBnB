@@ -76,7 +76,7 @@ public class Menus {
                 System.out.println("sorting is currently being updated");
                 break;
             case 3:
-                Bookings.createBooking(con,-1);
+                Bookings.createBooking(con,-1,0);
                 App.clearScreen();
                 renterMenu(con, renterID);
             case 4:

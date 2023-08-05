@@ -135,3 +135,8 @@ INSERT INTO `MyBnB`.`amenities` (`name`, `type`) VALUES ('Waterfront', 'Location
 
 INSERT INTO `MyBnB`.`amenities` (`name`, `type`) VALUES ('Smoke alarm', 'Safety');
 INSERT INTO `MyBnB`.`amenities` (`name`, `type`) VALUES ('Carbon monoxide alarm', 'Safety');
+
+INSERT INTO `MyBnB`.`ListingComment` (`FromUser`, `ListingID`, `Rating`,`Comment`) VALUES ('3', '1', '5', 'Amazing place');
+INSERT INTO `MyBnB`.`ListingComment` (`FromUser`, `ListingID`, `Rating`,`Comment`) VALUES ('7', '1', '1', 'This place sucks!');
+INSERT INTO `MyBnB`.`ListingComment` (`FromUser`, `ListingID`, `Rating`,`Comment`) VALUES ('31', '1', '4', 'Not bad but TV did not work');
+INSERT INTO `MyBnB`.`ListingComment` (`FromUser`, `ListingID`, `Rating`,`Comment`) VALUES ('27', '1', '5', 'Amazing pool!!');

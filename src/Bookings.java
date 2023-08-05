@@ -16,13 +16,13 @@ public class Bookings {
     private static final int CANCELLED_BY_RENTER = 3;
     private static final int BLOCKED_BY_HOST = 4;
 
-    public static void createBooking(Connection con, int id) {
+    public static void createBooking(Connection con, int id, float pricing) {
         if(!Users.isHost) {
             System.out.println("Enter the listing id: ");
             id = sc.nextInt();
         }
 
-        float pricing = Listings.viewListing(con, id);
+        // float pricing = Listings.viewListing(con, id);
         getAvailability(con, id);
         sc.nextLine();
 
@@ -105,7 +105,7 @@ public class Bookings {
                 + ACTIVE + " OR status = "
                 + BLOCKED_BY_HOST + ") ORDER BY start_date;";
         try {
-
+            App.clearScreen();
             PreparedStatement stmt = con.prepareStatement(query);
 
             stmt.setInt(1, listingId);
@@ -137,9 +137,13 @@ public class Bookings {
             rs.close();
             stmt.close();
 
+            System.out.println("\nPress Enter to return...");
+            sc.nextLine();
+
             return;
         } catch (SQLException e) {
             e.printStackTrace();
+            sc.nextLine();
         }
     }
 
