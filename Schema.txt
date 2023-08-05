@@ -99,3 +99,5 @@ ADD country VARCHAR(255) NOT NULL DEFAULT("Canada");
 
 INSERT INTO `MyBnB`.`listings` (`host_id`, `type`, `longitude`, `latitude`, `address`, `price`, `city`, `postal_code`, `country`) VALUES ('4', 'hotel', '55', '50', 'casabel drive', '125', 'North York', 'L9N 0T6', 'Canada');
 INSERT INTO `MyBnB`.`listings` (`host_id`, `type`, `longitude`, `latitude`, `address`, `price`, `city`, `postal_code`, `country`) VALUES ('2', 'hotel', '100', '100', 'colombo road', '300', 'Colombo', 'L9N B3L', 'Sri Lanka');
+
+UPDATE `MyBnB`.`users` SET `username` = 'mListings' WHERE (`id` = '320');

@@ -47,10 +47,10 @@ public class App {
             case 3:
                 // Reports.BookingsPer(con, true);
                 // Reports.BookingsPer(con, false);
-                // Reports.ListingsPer(con, 1);
-                // Reports.ListingsPer(con, 2);
-                // Reports.ListingsPer(con, 3);
-                // Reports.RankHosts(con);
+                Reports.ListingsPer(con, 1);
+                Reports.ListingsPer(con, 2);
+                Reports.ListingsPer(con, 3);
+                Reports.RankHosts(con);
                 break;
             case 4:
                 clearScreen();
