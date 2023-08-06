@@ -3,7 +3,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
@@ -269,7 +268,7 @@ public class Search {
             System.out.printf("All Listings");
             System.out.println();
             System.out.println("--------------------------------------------------------------------------------------");
-            System.out.printf("%-10s %-10s %-10s %-10s %-20s %-10s %-10s\n", "ListingxxID", "HostID", "Type", "Price","Address", "Latitude", "Longitude");
+            System.out.printf("%-10s %-10s %-10s %-10s %-20s %-10s %-10s\n", "ListingID", "HostID", "Type", "Price","Address", "Latitude", "Longitude");
             System.out.println("--------------------------------------------------------------------------------------");
             for (String listing : results) {
                 System.out.println(listing);
