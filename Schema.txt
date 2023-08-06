@@ -1,3 +1,13 @@
+Drop all tables:
+
+DROP TABLE Users;
+DROP TABLE Listings;
+DROP TABLE Bookings;
+DROP TABLE Amenities;
+DROP TABLE ListingAmenities;
+
+Create Tables:
+
 CREATE TABLE Users(
     id INT NOT NULL AUTO_INCREMENT,
     username VARCHAR(255) NOT NULL,
@@ -45,7 +55,7 @@ INSERT INTO `MyBnB`.`Listings` (`id`, `host_id`, `type`, `longitude`, `latitude`
 CREATE TABLE ListingAmenities (
     amenity_id INT NOT NULL,
     listing_id INT NOT NULL,
-    FOREIGN KEY (amenity_id) REFERENCES Amenities(id)
+    FOREIGN KEY (amenity_id) REFERENCES Amenities(id),
     FOREIGN KEY (listing_id) REFERENCES Listings(id)
 );
 
