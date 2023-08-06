@@ -44,7 +44,7 @@ public class Menus {
                 Bookings.readBookings(con, false);
                 App.clearScreen();
                 hostMenu(con, hostID);
-            case 7:
+            case 8:
                 System.out.println("Exiting MyBnB. Goodbye!");
                 break;
             default:
