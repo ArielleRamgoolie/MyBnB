@@ -2,8 +2,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
+
 import java.util.Scanner;
 
 public class Search {
@@ -78,63 +77,75 @@ public class Search {
 
     public static void distance(Connection con){
         try{
-            // We want to collect all listings 
-            List<String> results = new ArrayList<>();
 
             // Use Haversine Formula
-
             // Collect user Longitude and Latitude 
-            System.out.println("Enter your longitude:");
+            System.out.println("Enter your longitude (eg. 54.232)");
             double userLong = sc.nextDouble();
-            System.out.println("Enter your latitude:");
+            System.out.println("Enter your latitude (eg. 57.4813)");
             double userLat = sc.nextDouble();
 
             sc.nextLine();
 
             // Collect range; Default value is 10 km
             App.clearScreen();
-            System.out.println("This will, by default, find the listings within 10km of your longitude and latitude.");
+            System.out.println("This will, by default, find the listings within 20km of your longitude and latitude.");
             System.out.println("Would you like to enter a new range for the distance? (Y/N)");
             String res = sc.nextLine();
 
-            double range = 10.0;
+            double range = 20.0;
             if (res.equals("Y")){
                 System.out.println("Please enter the new range in kilometers");
                 range = sc.nextDouble();
+                sc.nextLine();
             }
 
             // query listings 
             Statement stmt = con.createStatement();
-            String query = "SELECT * FROM Listings";
+            String query = "SELECT id, host_id, type, longitude, latitude, address, price, city, postal_code, country, distance\n" + //
+                    "FROM \n" + //
+                    "(SELECT *,\n" + //
+                    "@ulon := " + userLong + ",\n" + //
+                    "@ulat := " + userLat + ",\n" + //
+                    "@dlon := radians(longitude)-radians(@ulon),\n" + //
+                    "@dlat := radians(latitude)-radians(@ulat),\n" + //
+                    "@first := pow(sin(@dlat / 2), 2) + cos(radians(@ulat)) * cos(radians(latitude)) * pow(sin(@dlon / 2), 2),\n" + //
+                    "@second := 2*asin(sqrt(@first))*6371 as distance\n" + //
+                    "from listings) as table1\n" + //
+                    "WHERE distance < " + range + "\n" +//
+                    "ORDER BY distance";
+            
+            //System.out.println(query);
             ResultSet rs = stmt.executeQuery(query);
+            // printListings(con, query);
 
-            // search through all the results 
-            while (rs.next()){
-                double currListingLat = rs.getDouble("latitude");
-                double currListingLong = rs.getDouble("longitude");
-
-                double dist = findDistance(currListingLat, currListingLong, userLat, userLong);
-
-                if (dist <= range) {
-                    String id = rs.getString("id");
-                    String hostId = rs.getString("host_id");
-                    String type = rs.getString("type");
-                    double price = rs.getDouble("price");
-                    String listingProperties = String.format("%-10s %-10s %-10s %-10.2f %-20s %-10s %-10s", id, hostId, type, price, currListingLat, currListingLong);
-                    results.add(listingProperties);
-                }
-            }
-            // TO DO: we must sort the results too
             // print the results to user 
             App.clearScreen();
-            System.out.printf("All Listings");
-            System.out.println();
-            System.out.println("--------------------------------------------------------------------------------------");
-            System.out.printf("%-10s %-10s %-10s %-10s %-10s %-10s\n", "ListingID", "HostID", "Type", "Price", "Latitude", "Longitude");
-            System.out.println("--------------------------------------------------------------------------------------");
-            for (String listing : results) {
-                System.out.println(listing);
+            System.out.println("Results for listings within " + range + " km from your location");
+            System.out.println("-------------------------------------------------------------------------------------------------------------------------------------");
+            System.out.printf("%-10s %-5s %-10s %-10s %-20s %-10s %-10s %-10s %-11s %-11s %13s\n", "ListingID", "Host", "Type", "Price", "Address", "City", "Country", "PostalCode", "Latitude", "Longitude", "Distance(km)");
+            System.out.println("-------------------------------------------------------------------------------------------------------------------------------------");
+            
+            while (rs.next()) {
+                int host = rs.getInt("host_id");
+                int listing = rs.getInt("id");
+                String type = rs.getString("type");
+                float longitude = rs.getFloat("longitude");
+                float latitude = rs.getFloat("latitude");
+                float price = rs.getFloat("price");
+                String address = rs.getString("address");
+                String city = rs.getString("city");
+                String country = rs.getString("country");
+                String postalcode = rs.getString("postal_code");
+                float distance = rs.getFloat("distance");
+
+                System.out.printf("%-10d %-5d %-10s %-10.2f %-20s %-10s %-10s %-10s %-11.3f %-11.3f %-13.3f\n", listing, host, type, price, address, city, country, postalcode, latitude, longitude, distance);
             }
+            System.out.println("-------------------------------------------------------------------------------------------------------------------------------------");
+
+            rs.close();
+            stmt.close();
+            
 
             // Wait for user input (pressing Enter) before continuing
             System.out.println("\nPress Enter to continue...");
@@ -146,19 +157,19 @@ public class Search {
         
     }
 
-    public static double findDistance(double listingLat, double listingLong, double userLat, double userLong){
-        // Use Haversine Formula
-        double radiusEarth = 6371.0;
+    // public static double findDistance(double listingLat, double listingLong, double userLat, double userLong){
+    //     // Use Haversine Formula
+    //     double radiusEarth = 6371.0;
 
-        double lat = ((userLat - listingLat) * ( Math.PI / 180.0));
-        double lon = ((userLong - listingLong) * ( Math.PI / 180.0));
+    //     double lat = ((userLat - listingLat) * ( Math.PI / 180.0));
+    //     double lon = ((userLong - listingLong) * ( Math.PI / 180.0));
 
-        double first = Math.sin(lat / 2) * Math.sin(lat / 2) + Math.cos(listingLat * ( Math.PI / 180.0)) * Math.cos(userLat * ( Math.PI / 180.0))* Math.sin(lon / 2) * Math.sin(listingLong / 2);
+    //     double first = Math.sin(lat / 2) * Math.sin(lat / 2) + Math.cos(listingLat * ( Math.PI / 180.0)) * Math.cos(userLat * ( Math.PI / 180.0))* Math.sin(lon / 2) * Math.sin(listingLong / 2);
 
-        double second = 2 * Math.atan2(Math.sqrt(first), Math.sqrt(1 - first));
+    //     double second = 2 * Math.atan2(Math.sqrt(first), Math.sqrt(1 - first));
 
-        return radiusEarth * second;
-    }
+    //     return radiusEarth * second;
+    // }
 
     public static void addressSerch(Connection con){
         System.out.println("Please enter the exact house number of the listing you would like to search for:");
@@ -213,6 +224,40 @@ public class Search {
         String query = "SELECT * FROM Listings WHERE "; 
         String response;
 
+        System.out.println("Would you like to filter by distance of listing?");
+        if (sc.nextLine().equals("Y")){
+            System.out.println("Enter your longitude (eg. 54.232)");
+            double userLong = sc.nextDouble();
+            System.out.println("Enter your latitude (eg. 57.4813)");
+            double userLat = sc.nextDouble();
+
+            sc.nextLine();
+
+            System.out.println("This will, by default, find the listings within 20km of your longitude and latitude.");
+            System.out.println("Would you like to enter a new range for the distance? (Y/N)");
+            String res = sc.nextLine();
+
+            double range = 20.0;
+            if (res.equals("Y")){
+                System.out.println("Please enter the new range in kilometers");
+                range = sc.nextDouble();
+                sc.nextLine();
+            }
+
+            query = "SELECT id, host_id, type, longitude, latitude, address, price, city, postal_code, country, distance\n" + //
+                    "FROM \n" + //
+                    "(SELECT *,\n" + //
+                    "@ulon := " + userLong + ",\n" + //
+                    "@ulat := " + userLat + ",\n" + //
+                    "@dlon := radians(longitude)-radians(@ulon),\n" + //
+                    "@dlat := radians(latitude)-radians(@ulat),\n" + //
+                    "@first := pow(sin(@dlat / 2), 2) + cos(radians(@ulat)) * cos(radians(latitude)) * pow(sin(@dlon / 2), 2),\n" + //
+                    "@second := 2*asin(sqrt(@first))*6371 as distance\n" + //
+                    "from listings) as table1\n" + //
+                    "WHERE distance < " + range + "\n" +//
+                    "AND ";
+        }
+
         System.out.println("Would you like to filter by HostID? (Y/N)");
         response = sc.nextLine();
         if (response.equals("Y")){
@@ -229,14 +274,6 @@ public class Search {
             String type = sc.nextLine();
             query = query + "type = '" + type + "' AND ";
         }
-
-        // System.out.println("Would you like to filter by distance of listing?");
-        // if (sc.nextLine().equals("Y")){
-        //     System.out.println("Enter type: apartment, house, hotel, guesthouse");
-        //     String type = sc.nextLine();
-        //     sc.nextLine();
-        //     query = query + "type = " + type + " AND ";
-        // }
 
 
         System.out.println("Would you like to filter by postal code of listing? (Y/N)");
@@ -294,6 +331,10 @@ public class Search {
 
         if (query.endsWith("AND ")){
             query = query.substring(0, query.length() - 4);
+        }
+
+        if (query.endsWith("WHERE ")){
+            query = query.substring(0, query.length() - 6);
         }
 
         printListings(con, query);
