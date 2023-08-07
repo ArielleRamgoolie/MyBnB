@@ -527,12 +527,12 @@ INSERT INTO Amenities (`name`, `type`) VALUES ('Smoke alarm', 'Safety');
 INSERT INTO Amenities (`name`, `type`) VALUES ('Carbon monoxide alarm', 'Safety');
 
 -- Listings
-insert into Listings (host_id, type, longitude, latitude, address, price, city, postal_code, country) values (2, house, 6.5, 6.5, markham road, 45, Markham, L6A 0T4, Canada);
-insert into Listings (host_id, type, longitude, latitude, address, price, city, postal_code, country) values (2, apartment, 44.5, 232.4, north york, 65, North York, L6A 0T4, Canada);
-insert into Listings (host_id, type, longitude, latitude, address, price, city, postal_code, country) values (4, hotel, 77.7, 43.4, scarborough gulf club, 100, Scarborough, L6A 0T4, Canada);
-insert into Listings (host_id, type, longitude, latitude, address, price, city, postal_code, country) values (4, apartment, 66.7, 44.4, military trail, 50, Scarborough, L6A 0T4, Canada);
-insert into Listings (host_id, type, longitude, latitude, address, price, city, postal_code, country) values (4, hotel, 55, 50, casabel drive, 125, North York, L9N 0T6, Canada);
-insert into Listings (host_id, type, longitude, latitude, address, price, city, postal_code, country) values (2, hotel, 100, 100, colombo road, 300, Colombo, L9N B3L, Sri Lanka);
+insert into Listings (host_id, type, longitude, latitude, address, price, city, postal_code, country) values (2, 'house', 6.5, 6.5, 'markham road', 45, 'Markham', 'L6A 0T4', 'Canada');
+insert into Listings (host_id, type, longitude, latitude, address, price, city, postal_code, country) values (2, 'apartment', 44.5, 232.4, 'north york', 65, 'North York', 'L6A 0T4', 'Canada');
+insert into Listings (host_id, type, longitude, latitude, address, price, city, postal_code, country) values (4, 'hotel', 77.7, 43.4, 'scarborough gulf club', 100, 'Scarborough', 'L6A 0T4', 'Canada');
+insert into Listings (host_id, type, longitude, latitude, address, price, city, postal_code, country) values (4, 'apartment', 66.7, 44.4, 'military trail', 50, 'Scarborough', 'L6A 0T4', 'Canada');
+insert into Listings (host_id, type, longitude, latitude, address, price, city, postal_code, country) values (4, 'hotel', 55, 50, 'casabel drive', 125, 'North York', 'L9N 0T6', 'Canada');
+insert into Listings (host_id, type, longitude, latitude, address, price, city, postal_code, country) values (2, 'hotel', 100, 100, 'colombo road', 300, 'Colombo', 'L9N B3L', 'Sri Lanka');
 
 insert into Listings (id, host_id, type, longitude, latitude, address, price, city, postal_code, country) values (7, 116, 'house', 55.4543246, 57.2840834, '4 Oneill Terrace', 55.95, 'Hamilton', 'E5E 5E5', 'Canada');
 insert into Listings (id, host_id, type, longitude, latitude, address, price, city, postal_code, country) values (8, 92, 'apartment', 111.6556388, -7.5450262, '5 Manufacturers Junction', 68.62, 'Kitchener', 'J0J 0J0', 'Canada');
