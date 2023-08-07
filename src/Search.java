@@ -11,13 +11,14 @@ public class Search {
 
     public static void printListings(Connection con, String query){
         try {
+            System.out.println(query);
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             App.clearScreen();
             System.out.println("Results:");
-            System.out.println("-----------------------------------------------------------------------------------------------------------------------------------");
-            System.out.printf("%-10s %-5s %-10s %-10s %-11s %-20s %-10s %-10s %-11s %-11s %-11s\n", "ListingID", "Host", "Type", "Price", "HouseNumber", "StreetName", "City", "Country", "PostalCode", "Latitude", "Longitude");
-            System.out.println("-----------------------------------------------------------------------------------------------------------------------------------");
+            System.out.println("----------------------------------------------------------------------------------------------------------------------------------------------------");
+            System.out.printf("%-10s %-5s %-10s %-10s %-40s %-20s %-10s %-15s %-11s %-11s\n", "ListingID", "Host", "Type", "Price", "Address", "City", "Country", "PostalCode", "Latitude", "Longitude");
+            System.out.println("---------------------------------------------------------------------------------------------------------------------------------------------------");
             
             while (rs.next()) {
                 int host = rs.getInt("host_id");
@@ -26,15 +27,14 @@ public class Search {
                 float longitude = rs.getFloat("longitude");
                 float latitude = rs.getFloat("latitude");
                 float price = rs.getFloat("price");
-                int housenumber = rs.getInt("house_number");
-                String streetname = rs.getString("street_name");
+                String streetname = rs.getString("address");
                 String city = rs.getString("city");
                 String country = rs.getString("country");
                 String postalcode = rs.getString("postal_code");
 
-                System.out.printf("%-10d %-5d %-10s %-10.2f %-11d %-20s %-10s %-10s %-11s %-11.3f %-11.3f\n", listing, host, type, price, housenumber, streetname, city, country, postalcode, latitude, longitude);
+                System.out.printf("%-10d %-5d %-10s %-10.2f %-40s %-20s %-10s %-15s %-11.3f %-11.3f\n", listing, host, type, price, streetname, city, country, postalcode, latitude, longitude);
             }
-            System.out.println("-----------------------------------------------------------------------------------------------------------------------------------");
+            System.out.println("---------------------------------------------------------------------------------------------------------------------------------------------------");
 
             rs.close();
             stmt.close();
@@ -169,6 +169,8 @@ public class Search {
         System.out.println("Please enter the exact street name of the listing you would like to search for:");
         String streetname = sc.nextLine();
 
+        String address = housenumber + " " + streetname;
+
         System.out.println("Please enter the exact city name of the listing you would like to search for:");
         String city = sc.nextLine();
 
@@ -176,7 +178,7 @@ public class Search {
         String country = sc.nextLine();
 
         // query listings 
-        String query = "SELECT * FROM Listings WHERE house_number = '" + housenumber + "' AND street_name = '" + streetname + "' AND city = '" + city + "' AND country = '" + country + "'"  ; 
+        String query = "SELECT * FROM Listings WHERE address = '" + address + "' AND city = '" + city + "' AND country = '" + country + "'"  ; 
 
         printListings(con, query);
 
@@ -226,7 +228,7 @@ public class Search {
         if (response.equals("Y")){
             System.out.println("Enter type: apartment, house, hotel, guesthouse");
             String type = sc.nextLine();
-            query = query + "type = '" + type + "'' AND ";
+            query = query + "type = '" + type + "' AND ";
         }
 
         // System.out.println("Would you like to filter by distance of listing?");

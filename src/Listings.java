@@ -9,50 +9,15 @@ public class Listings {
     private static final Scanner sc = new Scanner(System.in);
 
     public static void readListings(Connection con) {
-        try {
-            String query = "SELECT * FROM Listings";
+        String query = "SELECT * FROM Listings";
 
-            // if renter is requesting to see all listings, hostID = -1
-            if (Users.isHost) query += " WHERE host_id = " + Users.userId;
+        // if renter is requesting to see all listings, hostID = -1
+        if (Users.isHost) query += " WHERE host_id = " + Users.userId;
 
-            Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery(query);
 
-            App.clearScreen();
-            System.out.println("All Listings:");
-            System.out.println("------------------------------------------------------------------------------------------------------------------------------");
-            System.out.printf("%-10s %-5s %-10s %-10s %-11s %-20s %-10s %-10s %-11s %-11s %-11s\n", "ListingID", "Host", "Type", "Price", "HouseNumber", "StreetName", "City", "Country", "PostalCode", "Latitude", "Longitude");
-            System.out.println("------------------------------------------------------------------------------------------------------------------------------");
-            
-            while (rs.next()) {
-                int host = rs.getInt("host_id");
-                int listing = rs.getInt("id");
-                String type = rs.getString("type");
-                float longitude = rs.getFloat("longitude");
-                float latitude = rs.getFloat("latitude");
-                float price = rs.getFloat("price");
-                int housenumber = rs.getInt("house_number");
-                String streetname = rs.getString("street_name");
-                String city = rs.getString("city");
-                String country = rs.getString("country");
-                String postalcode = rs.getString("postal_code");
+        Search.printListings(con, query);
 
-                System.out.printf("%-10d %-5d %-10s %-10.2f %-11d %-20s %-10s %-10s %-11s %-11.3f %-11.3f\n", listing, host, type, price, housenumber, streetname, city, country, postalcode, latitude, longitude);
-            }
-            System.out.println("------------------------------------------------------------------------------------------------------------------------------");
-
-            rs.close();
-            stmt.close();
-
-            // Wait for user input (pressing Enter) before continuing
-            System.out.println("\nPress Enter to continue...");
-            sc.nextLine();
-
-            return;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        return;
     }
 
     public static void viewListing(Connection con, int listingId) {
@@ -67,9 +32,10 @@ public class Listings {
             ResultSet rs = stmt.executeQuery();
 
             App.clearScreen();
-            System.out.println("------------------------------------------------------------------------------------------------------------------------------");
-            System.out.printf("%-10s %-5s %-10s %-10s %-11s %-20s %-10s %-10s %-11s %-11s %-11s\n", "ListingID", "Host", "Type", "Price", "HouseNumber", "StreetName", "City", "Country", "PostalCode", "Latitude", "Longitude");
-            System.out.println("------------------------------------------------------------------------------------------------------------------------------");
+            System.out.println("----------------------------------------------------------------------------------------------------------------------------------");
+            System.out.printf("%-10s %-5s %-10s %-10s %-20s %-20s %-10s %-15s %-11s %-11s\n", "ListingID", "Host", "Type", "Price", "StreetName", "City", "Country", "PostalCode", "Latitude", "Longitude");
+            System.out.println("----------------------------------------------------------------------------------------------------------------------------------");
+            
             rs.next();
             
             int host = rs.getInt("host_id");
@@ -78,14 +44,13 @@ public class Listings {
             float longitude = rs.getFloat("longitude");
             float latitude = rs.getFloat("latitude");
             price = rs.getFloat("price");
-            int housenumber = rs.getInt("house_number");
-            String streetname = rs.getString("street_name");
+            String streetname = rs.getString("address");
             String city = rs.getString("city");
             String country = rs.getString("country");
             String postalcode = rs.getString("postal_code");
 
-            System.out.printf("%-10d %-5d %-10s %-10.2f %-11d %-20s %-10s %-10s %-11s %-11.3f %-11.3f\n", listing, host, type, price, housenumber, streetname, city, country, postalcode, latitude, longitude);
-            System.out.println("------------------------------------------------------------------------------------------------------------------------------");
+            System.out.printf("%-10d %-5d %-10s %-10.2f %-20s %-20s %-10s %-15s %-11.3f %-11.3f\n", listing, host, type, price, streetname, city, country, postalcode, latitude, longitude);
+            System.out.println("----------------------------------------------------------------------------------------------------------------------------------");
 
             rs.close();
             stmt.close();
@@ -117,11 +82,12 @@ public class Listings {
             default:
                 break;
         }
-
+        Listings.viewListing(con, listingId);
         return;
 
         } catch (SQLException e) {
             e.printStackTrace();
+            sc.nextLine();
         }
 
     }
@@ -269,7 +235,7 @@ public class Listings {
             System.out.println("Enter the street name (eg. Cool Street)");
             String streetname = sc.nextLine();
 
-            System.out.println("Enter city (eg. Vaughn) ");
+            System.out.println("Enter city (eg. Vaughan) ");
             String city = sc.nextLine();
 
             System.out.println("Enter the country (eg. Canada)");
@@ -290,13 +256,14 @@ public class Listings {
             String query = "INSERT INTO Listings (`host_id`, `type`, `longitude`, `latitude`, `price`, `house_number`, `street_name`, `city`, `country`, `postal_code`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
             PreparedStatement stmt = con.prepareStatement(query);
 
+            String address = housenumber + " " + streetname;
+
             stmt.setInt(1, host);
             stmt.setString(2, type);
             stmt.setDouble(3, longitude);
             stmt.setDouble(4, latitude);
             stmt.setDouble(5, price);
-            stmt.setString(6, housenumber);
-            stmt.setString(7, streetname);
+            stmt.setString(6, address);
             stmt.setString(8, city);
             stmt.setString(9, country);
             stmt.setString(10, pc);

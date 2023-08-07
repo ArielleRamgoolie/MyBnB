@@ -77,7 +77,7 @@ public class Menus {
                 searchMenu(con);
                 renterMenu(con, renterID);
             case 2:
-                Bookings.createBooking(con,-1, 0);
+                Listings.viewListing(con, -1);
                 App.clearScreen();
                 renterMenu(con, renterID);
             case 3:
