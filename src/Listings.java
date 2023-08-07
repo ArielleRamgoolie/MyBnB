@@ -253,7 +253,7 @@ public class Listings {
             System.out.println("Enter the price per night (eg. 52) ");
             double price = sc.nextDouble();
 
-            String query = "INSERT INTO Listings (`host_id`, `type`, `longitude`, `latitude`, `price`, `house_number`, `street_name`, `city`, `country`, `postal_code`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
+            String query = "INSERT INTO Listings (`host_id`, `type`, `longitude`, `latitude`, `price`, `address`, `city`, `country`, `postal_code`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
             PreparedStatement stmt = con.prepareStatement(query);
 
             String address = housenumber + " " + streetname;
