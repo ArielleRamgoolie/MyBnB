@@ -119,6 +119,7 @@ public class Menus {
             System.out.println("3. Exit search");
         
             int choice = sc.nextInt();
+            sc.nextLine();
 
             switch (choice) {
                 case 1: 
