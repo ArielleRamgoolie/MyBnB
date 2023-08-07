@@ -295,7 +295,7 @@ public static void createListing(Connection con, int hostID) {
             System.out.println("Enter the price per night (eg. 52) ");
             double price = sc.nextDouble();
 
-            // sc.nextLine();
+            sc.nextLine();
 
             String query = "INSERT INTO Listings (`host_id`, `type`, `longitude`, `latitude`, `price`, `address`, `city`, `country`, `postal_code`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
             // PreparedStatement stmt = con.prepareStatement(query);
@@ -324,10 +324,13 @@ public static void createListing(Connection con, int hostID) {
                 key = rs.getInt(1);
             }
 
-
             if (rowsAffected > 0) {
-                System.out.println("Added your listing successfully! Please move onto adding Amenities for your Listing");
-                System.out.println(key);
+                System.out.println("Added your listing successfully! Please move onto adding Amenities for your Listing by selecting 3 in menu");
+                System.out.println("Press Enter to continue..");
+                sc.nextLine();
+                // System.out.println(key);
+                // Listings.viewListing(con, key);
+                // return;
                 
             } else {
                 System.out.println("Failed, please try again");
