@@ -9,17 +9,12 @@ import java.util.Scanner;
 public class Search {
     private static final Scanner sc = new Scanner(System.in);
 
-    public static void ascendingPrices(Connection con) {
-
-        String query = "SELECT * FROM Listings ORDER BY price ASC";
-        printListings(con, query);
-
-    	try {
+    public static void printListings(Connection con, String query){
+        try {
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(query);
-
             App.clearScreen();
-            System.out.println("All Listings in Ascending Prices:");
+            System.out.println("Results:");
             System.out.println("------------------------------------------------------------------------------------------------------------------------------");
             System.out.printf("%-10s %-5s %-10s %-10s %-11s %-20s %-10s %-10s %-11s %-11s %-11s\n", "ListingID", "Host", "Type", "Price", "HouseNumber", "StreetName", "City", "Country", "PostalCode", "Latitude", "Longitude");
             System.out.println("------------------------------------------------------------------------------------------------------------------------------");
@@ -44,60 +39,39 @@ public class Search {
             rs.close();
             stmt.close();
 
-            // Wait for user input (pressing Enter) before continuing
-            System.out.println("\nPress Enter to continue...");
-            sc.nextLine();
-
-            return;
-
         } catch (SQLException e) {
-            e.printStackTrace();
+            e.printStackTrace(); 
         }
     }
 
-    public static void decendingPrices(Connection con) {
+    public static void filter(Connection con, String query){
+        System.out.println("Would you like to further filter this search? (Y/N)");
 
-        String query = "SELECT * FROM Listings ORDER BY price DESC";
-
-    	try {
-            Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery(query);
-
-            App.clearScreen();
-            System.out.println("All Listings in Descending Prices:");
-            System.out.println("------------------------------------------------------------------------------------------------------------------------------");
-            System.out.printf("%-10s %-5s %-10s %-10s %-11s %-20s %-10s %-10s %-11s %-11s %-11s\n", "ListingID", "Host", "Type", "Price", "HouseNumber", "StreetName", "City", "Country", "PostalCode", "Latitude", "Longitude");
-            System.out.println("------------------------------------------------------------------------------------------------------------------------------");
-            
-            while (rs.next()) {
-                int host = rs.getInt("host_id");
-                int listing = rs.getInt("id");
-                String type = rs.getString("type");
-                float longitude = rs.getFloat("longitude");
-                float latitude = rs.getFloat("latitude");
-                float price = rs.getFloat("price");
-                int housenumber = rs.getInt("house_number");
-                String streetname = rs.getString("street_name");
-                String city = rs.getString("city");
-                String country = rs.getString("country");
-                String postalcode = rs.getString("postal_code");
-
-                System.out.printf("%-10d %-5d %-10s %-10.2f %-11d %-20s %-10s %-10s %-11s %-11.3f %-11.3f\n", listing, host, type, price, housenumber, streetname, city, country, postalcode, latitude, longitude);
+        if (sc.nextLine().equals("Y")){
+            System.out.println("What would you like to filter / sort by? (eg. price range, amenities, availibility, ascending, descending)");
+            System.out.println("Please note that ascending and descending will sort by prices");
+            String res = sc.nextLine();
+            if (res.equals("price range")){
+                System.out.println("Enter max price");
+                int max = sc.nextInt();
+                System.out.println("Enter min price");
+                int min = sc.nextInt();
+                query = query + " AND price BETWEEN " + min + " AND " + max;
+                printListings(con, query);
+                sc.nextLine();
             }
-            System.out.println("------------------------------------------------------------------------------------------------------------------------------");
-
-            rs.close();
-            stmt.close();
-
-            // Wait for user input (pressing Enter) before continuing
-            System.out.println("\nPress Enter to continue...");
-            sc.nextLine();
-
-            return;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
+            if (res.equals("ascending")){
+                query = query + "ORDER BY price ASC";
+                printListings(con, query);
+                sc.nextLine();
+            }
+            if (res.equals("descending")){
+                query = query + "ORDER BY price DESC";
+                printListings(con, query);
+                sc.nextLine();
+            }
         }
+
     }
 
     public static void distance(Connection con){
@@ -188,10 +162,13 @@ public class Search {
         System.out.println("Please enter the exact house number of the listing you would like to search for:");
         int housenumber = sc.nextInt();
         sc.nextLine();
+
         System.out.println("Please enter the exact street name of the listing you would like to search for:");
         String streetname = sc.nextLine();
+
         System.out.println("Please enter the exact city name of the listing you would like to search for:");
         String city = sc.nextLine();
+
         System.out.println("Please enter the exact country name of the listing you would like to search for:");
         String country = sc.nextLine();
 
@@ -228,56 +205,95 @@ public class Search {
     
     }
 
-    public static void printListings(Connection con, String query){
-        try {
-            Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery(query);
-            App.clearScreen();
-            System.out.println("Results:");
-            System.out.println("------------------------------------------------------------------------------------------------------------------------------");
-            System.out.printf("%-10s %-5s %-10s %-10s %-11s %-20s %-10s %-10s %-11s %-11s %-11s\n", "ListingID", "Host", "Type", "Price", "HouseNumber", "StreetName", "City", "Country", "PostalCode", "Latitude", "Longitude");
-            System.out.println("------------------------------------------------------------------------------------------------------------------------------");
-            
-            while (rs.next()) {
-                int host = rs.getInt("host_id");
-                int listing = rs.getInt("id");
-                String type = rs.getString("type");
-                float longitude = rs.getFloat("longitude");
-                float latitude = rs.getFloat("latitude");
-                float price = rs.getFloat("price");
-                int housenumber = rs.getInt("house_number");
-                String streetname = rs.getString("street_name");
-                String city = rs.getString("city");
-                String country = rs.getString("country");
-                String postalcode = rs.getString("postal_code");
+    public static void advanceSearch(Connection con){
+        String query = "SELECT * FROM Listings WHERE "; 
+        String response;
 
-                System.out.printf("%-10d %-5d %-10s %-10.2f %-11d %-20s %-10s %-10s %-11s %-11.3f %-11.3f\n", listing, host, type, price, housenumber, streetname, city, country, postalcode, latitude, longitude);
-            }
-            System.out.println("------------------------------------------------------------------------------------------------------------------------------");
-
-            rs.close();
-            stmt.close();
-
-        } catch (SQLException e) {
-            e.printStackTrace(); 
-        }
-    }
-
-    public static void filter(Connection con, String query){
-        System.out.println("Would you like to further filter this search? (Y/N)");
-        if (sc.nextLine().equals("Y")){
-            System.out.println("What would you like to filter by? (eg. price range, amenities, availibility)");
-            if (sc.nextLine().equals("price range")){
-                System.out.println("Enter max price");
-                int max = sc.nextInt();
-                System.out.println("Enter min price");
-                int min = sc.nextInt();
-                query = query + " AND price BETWEEN " + min + " AND " + max;
-                printListings(con, query);
-                sc.nextLine();
-            }
+        System.out.println("Would you like to filter by HostID? (Y/N)");
+        response = sc.nextLine();
+        if (response.equals("Y")){
+            System.out.println("Enter host ID");
+            int host = sc.nextInt();
+            sc.nextLine();
+            query = query + "host_id = " + host + " AND ";
         }
 
+        System.out.println("Would you like to filter by type of listing? (Y/N)");
+        response = sc.nextLine();
+        if (response.equals("Y")){
+            System.out.println("Enter type: apartment, house, hotel, guesthouse");
+            String type = sc.nextLine();
+            query = query + "type = '" + type + "'' AND ";
+        }
+
+        // System.out.println("Would you like to filter by distance of listing?");
+        // if (sc.nextLine().equals("Y")){
+        //     System.out.println("Enter type: apartment, house, hotel, guesthouse");
+        //     String type = sc.nextLine();
+        //     sc.nextLine();
+        //     query = query + "type = " + type + " AND ";
+        // }
+
+
+        System.out.println("Would you like to filter by postal code of listing? (Y/N)");
+        response = sc.nextLine();
+        if (response.equals("Y")){
+            System.out.println("Enter type postal code (eg. LNL NLN)");
+            String pc = sc.nextLine();
+            query = query + "postal_code = '" + pc + "' AND ";
+        }
+
+        System.out.println("Would you like to filter by city of listing? (Y/N)");
+        response = sc.nextLine();
+        if (response.equals("Y")){
+            System.out.println("Enter type city");
+            String city = sc.nextLine();
+            query = query + "city = '" + city + "' AND ";
+        }
+
+        System.out.println("Would you like to filter by country of listing? (Y/N)");
+        response = sc.nextLine();
+        if (response.equals("Y")){
+            System.out.println("Enter country");
+            String country = sc.nextLine();
+            query = query + "country = '" + country + "' AND ";
+        }
+
+        System.out.println("Would you like to filter by price range (Y/N)");
+        response = sc.nextLine();
+        if (response.equals("Y")){
+            System.out.println("Enter min price");
+            int min = sc.nextInt();
+            System.out.println("Enter max price");
+            int max = sc.nextInt();
+            query = query + "price BETWEEN " + min + " AND " + max;
+            sc.nextLine();
+        }
+        
+        System.out.println("Would you like to sort by ascending (Y/N)");
+        response = sc.nextLine();
+        if (response.equals("Y")){
+            if (query.endsWith("AND ")){
+                query = query.substring(0, query.length() - 4);
+            }
+            query = query + " ORDER BY price ASC";
+        } else {
+            System.out.println("Would you like to sort by descending (Y/N)");
+            response = sc.nextLine();
+            if (response.equals("Y")){
+                if (query.endsWith("AND ")){
+                    query = query.substring(0, query.length() - 4);
+                }
+                query = query + " ORDER BY price DESC";
+            }
+        }
+
+        if (query.endsWith("AND ")){
+            query = query.substring(0, query.length() - 4);
+        }
+
+        printListings(con, query);
+        System.out.println("Press enter to continue: ");
+        sc.nextLine();
     }
-    
 }

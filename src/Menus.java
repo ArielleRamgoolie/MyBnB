@@ -106,15 +106,14 @@ public class Menus {
             sc.nextLine();
             return; 
         } else if (res.equals("Y")) {
-            System.out.println("1. Apply filters to search (price range, availability dates, amenities)");
-            System.out.println("2. Regular search (distance, postal code, address)");
-            System.out.println("3. Advance search (search by multiple filters at once)");
-            System.out.println("4. Exit search");
+            System.out.println("1. Regular search (distance, postal code, address)");
+            System.out.println("2. Advance search (search by multiple filters at once)");
+            System.out.println("3. Exit search");
         
             int choice = sc.nextInt();
             sc.nextLine();
             switch (choice) {
-                case 2: 
+                case 1: 
                     System.out.println("Enter the type of search you'd like to conduct: (eg. distance, postal code, address)");
                     String search = sc.nextLine();
                     if (search.equals("distance")){
@@ -127,11 +126,10 @@ public class Menus {
                         Search.addressSerch(con);
                     }
                     break; 
-                case 3:
+                case 2:
                     App.clearScreen();
-                    Search.postalCode(con);
-                    break;
-                case 4:
+                    Search.advanceSearch(con);
+                case 3:
                     App.clearScreen();
                     break;
                 default:
