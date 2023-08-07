@@ -18,22 +18,27 @@ public class Search {
             ResultSet rs = stmt.executeQuery(query);
 
             App.clearScreen();
-            System.out.println("All Listings (Price: Low to High):");
-            System.out.println("--------------------------------------------------------------------------------------");
-            System.out.printf("%-10s %-10s %-10s %-10s %-20s %-10s %-10s\n", "ListingID", "HostID", "Type", "Price","Address", "Latitude", "Longitude");
-            System.out.println("--------------------------------------------------------------------------------------");
+            System.out.println("All Listings in Ascending Prices:");
+            System.out.println("------------------------------------------------------------------------------------------------------------------------------");
+            System.out.printf("%-10s %-5s %-10s %-10s %-11s %-20s %-10s %-10s %-11s %-11s %-11s\n", "ListingID", "Host", "Type", "Price", "HouseNumber", "StreetName", "City", "Country", "PostalCode", "Latitude", "Longitude");
+            System.out.println("------------------------------------------------------------------------------------------------------------------------------");
+            
             while (rs.next()) {
                 int host = rs.getInt("host_id");
                 int listing = rs.getInt("id");
                 String type = rs.getString("type");
-                float price = rs.getFloat("price");
-                String address = rs.getString("address");
                 float longitude = rs.getFloat("longitude");
                 float latitude = rs.getFloat("latitude");
+                float price = rs.getFloat("price");
+                int housenumber = rs.getInt("house_number");
+                String streetname = rs.getString("street_name");
+                String city = rs.getString("city");
+                String country = rs.getString("country");
+                String postalcode = rs.getString("postal_code");
 
-                System.out.printf("%-10d %-10d %-10s %-10.2f %-20s %-10.2f %-10.2f\n", listing, host, type, price, address, latitude, longitude);
+                System.out.printf("%-10d %-5d %-10s %-10.2f %-11d %-20s %-10s %-10s %-11s %-11.3f %-11.3f\n", listing, host, type, price, housenumber, streetname, city, country, postalcode, latitude, longitude);
             }
-            System.out.println("--------------------------------------------------------------------------------------");
+            System.out.println("------------------------------------------------------------------------------------------------------------------------------");
 
             rs.close();
             stmt.close();
@@ -58,22 +63,27 @@ public class Search {
             ResultSet rs = stmt.executeQuery(query);
 
             App.clearScreen();
-            System.out.println("All Listings (Price: High to Low):");
-            System.out.println("--------------------------------------------------------------------------------------");
-            System.out.printf("%-10s %-10s %-10s %-10s %-20s %-10s %-10s\n", "ListingID", "HostID", "Type", "Price","Address", "Latitude", "Longitude");
-            System.out.println("--------------------------------------------------------------------------------------");
+            System.out.println("All Listings in Descending Prices:");
+            System.out.println("------------------------------------------------------------------------------------------------------------------------------");
+            System.out.printf("%-10s %-5s %-10s %-10s %-11s %-20s %-10s %-10s %-11s %-11s %-11s\n", "ListingID", "Host", "Type", "Price", "HouseNumber", "StreetName", "City", "Country", "PostalCode", "Latitude", "Longitude");
+            System.out.println("------------------------------------------------------------------------------------------------------------------------------");
+            
             while (rs.next()) {
                 int host = rs.getInt("host_id");
                 int listing = rs.getInt("id");
                 String type = rs.getString("type");
-                float price = rs.getFloat("price");
-                String address = rs.getString("address");
                 float longitude = rs.getFloat("longitude");
                 float latitude = rs.getFloat("latitude");
+                float price = rs.getFloat("price");
+                int housenumber = rs.getInt("house_number");
+                String streetname = rs.getString("street_name");
+                String city = rs.getString("city");
+                String country = rs.getString("country");
+                String postalcode = rs.getString("postal_code");
 
-                System.out.printf("%-10d %-10d %-10s %-10.2f %-20s %-10.2f %-10.2f\n", listing, host, type, price, address, latitude, longitude);
+                System.out.printf("%-10d %-5d %-10s %-10.2f %-11d %-20s %-10s %-10s %-11s %-11.3f %-11.3f\n", listing, host, type, price, housenumber, streetname, city, country, postalcode, latitude, longitude);
             }
-            System.out.println("--------------------------------------------------------------------------------------");
+            System.out.println("------------------------------------------------------------------------------------------------------------------------------");
 
             rs.close();
             stmt.close();
@@ -88,130 +98,6 @@ public class Search {
             e.printStackTrace();
         }
     }
-
-    // public static void maxListing(int max, Connection con) {
-       
-    //     String query = "SELECT * FROM Listings WHERE price >=" + max;
-
-    // 	try {
-    //         Statement stmt = con.createStatement();
-    //         ResultSet rs = stmt.executeQuery(query);
-
-    //         App.clearScreen();
-    //         System.out.printf("All Listings with prices greater than $%.2f:", (float) max);
-    //         System.out.println();
-    //         System.out.println("--------------------------------------------------------------------------------------");
-    //         System.out.printf("%-10s %-10s %-10s %-10s %-20s %-10s %-10s\n", "ListingID", "HostID", "Type", "Price","Address", "Latitude", "Longitude");
-    //         System.out.println("--------------------------------------------------------------------------------------");
-    //         while (rs.next()) {
-    //             int host = rs.getInt("host_id");
-    //             int listing = rs.getInt("id");
-    //             String type = rs.getString("type");
-    //             float price = rs.getFloat("price");
-    //             String address = rs.getString("address");
-    //             float longitude = rs.getFloat("longitude");
-    //             float latitude = rs.getFloat("latitude");
-
-    //             System.out.printf("%-10d %-10d %-10s %-10.2f %-20s %-10.2f %-10.2f\n", listing, host, type, price, address, latitude, longitude);
-    //         }
-    //         System.out.println("--------------------------------------------------------------------------------------");
-
-    //         rs.close();
-    //         stmt.close();
-
-    //         // Wait for user input (pressing Enter) before continuing
-    //         System.out.println("\nPress Enter to continue...");
-    //         sc.nextLine();
-
-    //         return;
-
-    //     } catch (SQLException e) {
-    //         e.printStackTrace();
-    //     }
-    // }
-
-    // public static void minListing(int min, Connection con) {
-               
-    //     String query = "SELECT * FROM Listings WHERE price <=" + min;
-
-    // 	try {
-    //         Statement stmt = con.createStatement();
-    //         ResultSet rs = stmt.executeQuery(query);
-
-    //         App.clearScreen();
-    //         System.out.printf("All Listings with prices less than $%.2f:", (float) min);
-    //         System.out.println();
-    //         System.out.println("--------------------------------------------------------------------------------------");
-    //         System.out.printf("%-10s %-10s %-10s %-10s %-20s %-10s %-10s\n", "ListingID", "HostID", "Type", "Price","Address", "Latitude", "Longitude");
-    //         System.out.println("--------------------------------------------------------------------------------------");
-    //         while (rs.next()) {
-    //             int host = rs.getInt("host_id");
-    //             int listing = rs.getInt("id");
-    //             String type = rs.getString("type");
-    //             float price = rs.getFloat("price");
-    //             String address = rs.getString("address");
-    //             float longitude = rs.getFloat("longitude");
-    //             float latitude = rs.getFloat("latitude");
-
-    //             System.out.printf("%-10d %-10d %-10s %-10.2f %-20s %-10.2f %-10.2f\n", listing, host, type, price, address, latitude, longitude);
-    //         }
-    //         System.out.println("--------------------------------------------------------------------------------------");
-
-    //         rs.close();
-    //         stmt.close();
-
-    //         // Wait for user input (pressing Enter) before continuing
-    //         System.out.println("\nPress Enter to continue...");
-    //         sc.nextLine();
-
-    //         return;
-
-    //     } catch (SQLException e) {
-    //         e.printStackTrace();
-    //     }
-    // }
-
-    // public static void typeSort(String type, Connection con) {
-                       
-    //     String query = "SELECT * FROM Listings WHERE type = '" + type + "'";
-
-    // 	try {
-    //         Statement stmt = con.createStatement();
-    //         ResultSet rs = stmt.executeQuery(query);
-
-    //         App.clearScreen();
-    //         System.out.printf("All %s Listings", type);
-    //         System.out.println();
-    //         System.out.println();
-    //         System.out.println("--------------------------------------------------------------------------------------");
-    //         System.out.printf("%-10s %-10s %-10s %-10s %-20s %-10s %-10s\n", "ListingID", "HostID", "Type", "Price","Address", "Latitude", "Longitude");
-    //         System.out.println("--------------------------------------------------------------------------------------");
-    //         while (rs.next()) {
-    //             int host = rs.getInt("host_id");
-    //             int listing = rs.getInt("id");
-    //             String types = rs.getString("type");
-    //             float price = rs.getFloat("price");
-    //             String address = rs.getString("address");
-    //             float longitude = rs.getFloat("longitude");
-    //             float latitude = rs.getFloat("latitude");
-
-    //             System.out.printf("%-10d %-10d %-10s %-10.2f %-20s %-10.2f %-10.2f\n", listing, host, types, price, address, latitude, longitude);
-    //         }
-    //         System.out.println("--------------------------------------------------------------------------------------");
-
-    //         rs.close();
-    //         stmt.close();
-
-    //         // Wait for user input (pressing Enter) before continuing
-    //         System.out.println("\nPress Enter to continue...");
-    //         sc.nextLine();
-
-    //         return;
-
-    //     } catch (SQLException e) {
-    //         e.printStackTrace();
-    //     }
-    // }
 
     public static void distance(Connection con){
         try{
@@ -300,34 +186,43 @@ public class Search {
 
     public static void addressSerch(Connection con){
         try{
-            System.out.println("Please enter the exact address you would like to search for:");
-            String address = sc.nextLine();
+            System.out.println("Please enter the exact house number of the listing you would like to search for:");
+            int housenumber = sc.nextInt();
+            sc.nextLine();
+            System.out.println("Please enter the exact street name of the listing you would like to search for:");
+            String streetname = sc.nextLine();
+            System.out.println("Please enter the exact city name of the listing you would like to search for:");
+            String city = sc.nextLine();
+            System.out.println("Please enter the exact country name of the listing you would like to search for:");
+            String country = sc.nextLine();
 
-            // query listings
-            String query = "SELECT * FROM Listings WHERE address = '" + address + "'"; 
+            // query listings 
+            String query = "SELECT * FROM Listings WHERE house_number = '" + housenumber + "' AND street_name = '" + streetname + "' AND city = '" + city + "' AND country = '" + country + "'"  ; 
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(query);
 
             App.clearScreen();
-            System.out.printf("All %s Listings", address);
-            System.out.println();
-            System.out.println();
-            System.out.println("--------------------------------------------------------------------------------------");
-            System.out.printf("%-10s %-10s %-10s %-10s %-20s %-10s %-10s\n", "ListingID", "HostID", "Type", "Price","Address", "Latitude", "Longitude");
-            System.out.println("--------------------------------------------------------------------------------------");
+            System.out.println("All Listings in Descending Prices:");
+            System.out.println("------------------------------------------------------------------------------------------------------------------------------");
+            System.out.printf("%-10s %-5s %-10s %-10s %-11s %-20s %-10s %-10s %-11s %-11s %-11s\n", "ListingID", "Host", "Type", "Price", "HouseNumber", "StreetName", "City", "Country", "PostalCode", "Latitude", "Longitude");
+            System.out.println("------------------------------------------------------------------------------------------------------------------------------");
+            
             while (rs.next()) {
                 int host = rs.getInt("host_id");
                 int listing = rs.getInt("id");
-                String types = rs.getString("type");
-                float price = rs.getFloat("price");
-                // address = rs.getString("address");
+                String type = rs.getString("type");
                 float longitude = rs.getFloat("longitude");
                 float latitude = rs.getFloat("latitude");
+                float price = rs.getFloat("price");
+                housenumber = rs.getInt("house_number");
+                streetname = rs.getString("street_name");
+                city = rs.getString("city");
+                country = rs.getString("country");
+                String postalcode = rs.getString("postal_code");
 
-                System.out.printf("%-10d %-10d %-10s %-10.2f %-20s %-10.2f %-10.2f\n", listing, host, types, price, address, latitude, longitude);
+                System.out.printf("%-10d %-5d %-10s %-10.2f %-11d %-20s %-10s %-10s %-11s %-11.3f %-11.3f\n", listing, host, type, price, housenumber, streetname, city, country, postalcode, latitude, longitude);
             }
-            System.out.println("--------------------------------------------------------------------------------------");
-
+            System.out.println("------------------------------------------------------------------------------------------------------------------------------");
             rs.close();
             stmt.close();
 
@@ -354,25 +249,27 @@ public class Search {
             ResultSet rs = stmt.executeQuery(query);
 
             App.clearScreen();
-            System.out.printf("All %s Listings", pc);
-            System.out.println();
-            System.out.println();
-            System.out.println("--------------------------------------------------------------------------------------------------");
-            System.out.printf("%-10s %-10s %-10s %-10s %-10s %-20s %-10s %-10s\n", "ListingID", "HostID", "Type", "Price",  "Postal_Code", "Address", "Latitude", "Longitude");
-            System.out.println("--------------------------------------------------------------------------------------------------");
+            System.out.println("All Listings in Descending Prices:");
+            System.out.println("------------------------------------------------------------------------------------------------------------------------------");
+            System.out.printf("%-10s %-5s %-10s %-10s %-11s %-20s %-10s %-10s %-11s %-11s %-11s\n", "ListingID", "Host", "Type", "Price", "HouseNumber", "StreetName", "City", "Country", "PostalCode", "Latitude", "Longitude");
+            System.out.println("------------------------------------------------------------------------------------------------------------------------------");
+            
             while (rs.next()) {
                 int host = rs.getInt("host_id");
                 int listing = rs.getInt("id");
-                String types = rs.getString("type");
-                float price = rs.getFloat("price");
-                String actual_pc = rs.getString("postal_code");
-                String address = rs.getString("address");
+                String type = rs.getString("type");
                 float longitude = rs.getFloat("longitude");
                 float latitude = rs.getFloat("latitude");
+                float price = rs.getFloat("price");
+                int housenumber = rs.getInt("house_number");
+                String streetname = rs.getString("street_name");
+                String city = rs.getString("city");
+                String country = rs.getString("country");
+                String postalcode = rs.getString("postal_code");
 
-                System.out.printf("%-10d %-10d %-10s %-10.2f %-10s %-20s %-10.2f %-10.2f\n", listing, host, types, price, actual_pc, address, latitude, longitude);
+                System.out.printf("%-10d %-5d %-10s %-10.2f %-11d %-20s %-10s %-10s %-11s %-11.3f %-11.3f\n", listing, host, type, price, housenumber, streetname, city, country, postalcode, latitude, longitude);
             }
-            System.out.println("-------------------------------------------------------------------------------------------------------");
+            System.out.println("------------------------------------------------------------------------------------------------------------------------------");
 
             rs.close();
             stmt.close();
