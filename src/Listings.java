@@ -21,25 +21,29 @@ public class Listings {
             App.clearScreen();
             System.out.println("All Listings:");
             System.out
-                    .println("--------------------------------------------------------------------------------------");
-            System.out.printf("%-10s %-10s %-10s %-10s %-20s %-10s %-10s\n", "ListingID", "HostID", "Type", "Price",
-                    "Address", "Latitude", "Longitude");
+                    .println("------------------------------------------------------------------------------------------------------------------------------");
+            System.out.printf("%-10s %-5s %-10s %-10s %-11s %-20s %-10s %-10s %-11s %-11s %-11s\n", "ListingID", "Host", "Type", "Price",
+                    "HouseNumber", "StreetName", "City", "Country", "PostalCode", "Latitude", "Longitude");
             System.out
-                    .println("--------------------------------------------------------------------------------------");
+                    .println("------------------------------------------------------------------------------------------------------------------------------");
             while (rs.next()) {
                 int host = rs.getInt("host_id");
                 int listing = rs.getInt("id");
                 String type = rs.getString("type");
-                float price = rs.getFloat("price");
-                String address = rs.getString("address");
                 float longitude = rs.getFloat("longitude");
                 float latitude = rs.getFloat("latitude");
+                float price = rs.getFloat("price");
+                int housenumber = rs.getInt("house_number");
+                String streetname = rs.getString("street_name");
+                String city = rs.getString("city");
+                String country = rs.getString("country");
+                String postalcode = rs.getString("postal_code");
 
-                System.out.printf("%-10d %-10d %-10s %-10.2f %-20s %-10.2f %-10.2f\n", listing, host, type, price,
-                        address, latitude, longitude);
+                System.out.printf("%-10d %-5d %-10s %-10.2f %-11d %-20s %-10s %-10s %-11s %-11.3f %-11.3f\n", listing, host, type, price,
+                        housenumber, streetname, city, country, postalcode, latitude, longitude);
             }
             System.out
-                    .println("--------------------------------------------------------------------------------------");
+                    .println("------------------------------------------------------------------------------------------------------------------------------");
 
             rs.close();
             stmt.close();
@@ -256,27 +260,45 @@ public class Listings {
             System.out.println("Enter the listing type: 'house', 'apartment', 'guesthouse' or 'hotel'");
             String type = sc.nextLine();
 
-            System.out.println("Enter the address: ");
-            String address = sc.nextLine();
+            // System.out.println("Enter the address: ");
+            // String address = sc.nextLine();
+            System.out.println("Enter house number (eg. 1) ");
+            String housenumber = sc.nextLine();
 
-            System.out.println("Enter the longitude: ");
+            System.out.println("Enter the street name (eg. Cool Street)");
+            String streetname = sc.nextLine();
+
+            System.out.println("Enter city (eg. Vaughn) ");
+            String city = sc.nextLine();
+
+            System.out.println("Enter the country (eg. Canada)");
+            String country = sc.nextLine();
+
+            System.out.println("Enter the postal code (eg. LNL NLN) ");
+            String pc = sc.nextLine();
+
+            System.out.println("Enter the longitude (eg. 52.555)");
             double longitude = sc.nextDouble();
 
-            System.out.println("Enter the latitude: ");
+            System.out.println("Enter the latitude (eg. 54.555) ");
             double latitude = sc.nextDouble();
 
-            System.out.println("Enter the price per night: ");
+            System.out.println("Enter the price per night (eg. 52) ");
             double price = sc.nextDouble();
 
-            String query = "INSERT INTO Listings (`host_id`, `type`, `address`, `longitude`, `latitude`, `price`) VALUES (?, ?, ?, ?, ?, ?);";
+            String query = "INSERT INTO Listings (`host_id`, `type`, `longitude`, `latitude`, `price`, `house_number`, `street_name`, `city`, `country`, `postal_code`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
             PreparedStatement stmt = con.prepareStatement(query);
 
             stmt.setInt(1, host);
             stmt.setString(2, type);
-            stmt.setString(3, address);
-            stmt.setDouble(4, longitude);
-            stmt.setDouble(5, latitude);
-            stmt.setDouble(6, price);
+            stmt.setDouble(3, longitude);
+            stmt.setDouble(4, latitude);
+            stmt.setDouble(5, price);
+            stmt.setString(6, housenumber);
+            stmt.setString(7, streetname);
+            stmt.setString(8, city);
+            stmt.setString(9, country);
+            stmt.setString(10, pc);
 
             int rowsAffected = stmt.executeUpdate();
             stmt.close();
