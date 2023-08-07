@@ -20,12 +20,10 @@ public class Listings {
 
             App.clearScreen();
             System.out.println("All Listings:");
-            System.out
-                    .println("------------------------------------------------------------------------------------------------------------------------------");
-            System.out.printf("%-10s %-5s %-10s %-10s %-11s %-20s %-10s %-10s %-11s %-11s %-11s\n", "ListingID", "Host", "Type", "Price",
-                    "HouseNumber", "StreetName", "City", "Country", "PostalCode", "Latitude", "Longitude");
-            System.out
-                    .println("------------------------------------------------------------------------------------------------------------------------------");
+            System.out.println("------------------------------------------------------------------------------------------------------------------------------");
+            System.out.printf("%-10s %-5s %-10s %-10s %-11s %-20s %-10s %-10s %-11s %-11s %-11s\n", "ListingID", "Host", "Type", "Price", "HouseNumber", "StreetName", "City", "Country", "PostalCode", "Latitude", "Longitude");
+            System.out.println("------------------------------------------------------------------------------------------------------------------------------");
+            
             while (rs.next()) {
                 int host = rs.getInt("host_id");
                 int listing = rs.getInt("id");
@@ -39,11 +37,9 @@ public class Listings {
                 String country = rs.getString("country");
                 String postalcode = rs.getString("postal_code");
 
-                System.out.printf("%-10d %-5d %-10s %-10.2f %-11d %-20s %-10s %-10s %-11s %-11.3f %-11.3f\n", listing, host, type, price,
-                        housenumber, streetname, city, country, postalcode, latitude, longitude);
+                System.out.printf("%-10d %-5d %-10s %-10.2f %-11d %-20s %-10s %-10s %-11s %-11.3f %-11.3f\n", listing, host, type, price, housenumber, streetname, city, country, postalcode, latitude, longitude);
             }
-            System.out
-                    .println("------------------------------------------------------------------------------------------------------------------------------");
+            System.out.println("------------------------------------------------------------------------------------------------------------------------------");
 
             rs.close();
             stmt.close();
@@ -71,20 +67,25 @@ public class Listings {
             ResultSet rs = stmt.executeQuery();
 
             App.clearScreen();
-            System.out.printf("%-10s %-10s %-10s %-10s %-20s %-10s %-10s\n", "ListingID", "HostID", "Type", "Price",
-                    "Address", "Latitude", "Longitude");
-            System.out.println("--------------------------------------------------------------------------------------");
+            System.out.println("------------------------------------------------------------------------------------------------------------------------------");
+            System.out.printf("%-10s %-5s %-10s %-10s %-11s %-20s %-10s %-10s %-11s %-11s %-11s\n", "ListingID", "Host", "Type", "Price", "HouseNumber", "StreetName", "City", "Country", "PostalCode", "Latitude", "Longitude");
+            System.out.println("------------------------------------------------------------------------------------------------------------------------------");
             rs.next();
+            
             int host = rs.getInt("host_id");
             int listing = rs.getInt("id");
             String type = rs.getString("type");
-            price = rs.getFloat("price");
-            String address = rs.getString("address");
             float longitude = rs.getFloat("longitude");
             float latitude = rs.getFloat("latitude");
+            price = rs.getFloat("price");
+            int housenumber = rs.getInt("house_number");
+            String streetname = rs.getString("street_name");
+            String city = rs.getString("city");
+            String country = rs.getString("country");
+            String postalcode = rs.getString("postal_code");
 
-            System.out.printf("%-10d %-10d %-10s %-10.2f %-20s %-10.2f %-10.2f\n", listing, host, type, price, address,
-                    latitude, longitude);
+            System.out.printf("%-10d %-5d %-10s %-10.2f %-11d %-20s %-10s %-10s %-11s %-11.3f %-11.3f\n", listing, host, type, price, housenumber, streetname, city, country, postalcode, latitude, longitude);
+            System.out.println("------------------------------------------------------------------------------------------------------------------------------");
 
             rs.close();
             stmt.close();
@@ -94,6 +95,7 @@ public class Listings {
             System.out.println("3. See availability");
             System.out.println("4. Make booking");
             System.out.println("5. Return to menu");
+
         int choice = sc.nextInt();
         sc.nextLine();
         switch (choice) {
@@ -115,7 +117,8 @@ public class Listings {
             default:
                 break;
         }
-        Listings.viewListing(con, listingId);
+
+        return;
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -260,8 +263,6 @@ public class Listings {
             System.out.println("Enter the listing type: 'house', 'apartment', 'guesthouse' or 'hotel'");
             String type = sc.nextLine();
 
-            // System.out.println("Enter the address: ");
-            // String address = sc.nextLine();
             System.out.println("Enter house number (eg. 1) ");
             String housenumber = sc.nextLine();
 
