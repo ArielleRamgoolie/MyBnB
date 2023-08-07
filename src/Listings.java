@@ -327,10 +327,10 @@ public static void createListing(Connection con, int hostID) {
             if (rowsAffected > 0) {
                 System.out.println("Added your listing successfully! Please move onto adding Amenities for your Listing by selecting 3 in menu");
                 System.out.println("Press Enter to continue..");
+                System.out.println(key);
                 sc.nextLine();
-                // System.out.println(key);
-                // Listings.viewListing(con, key);
-                // return;
+                Listings.viewListing(con, key);
+                return;
                 
             } else {
                 System.out.println("Failed, please try again");
