@@ -2,7 +2,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
+import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 public class Search {
@@ -14,9 +15,9 @@ public class Search {
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             App.clearScreen();
-            System.out.println("----------------------------------------------------------------------------------------------------------------------------------------------------");
-            System.out.printf("%-10s %-5s %-10s %-10s %-40s %-20s %-10s %-15s %-11s %-11s\n", "ListingID", "Host", "Type", "Price", "Address", "City", "Country", "PostalCode", "Latitude", "Longitude");
-            System.out.println("---------------------------------------------------------------------------------------------------------------------------------------------------");
+            System.out.println("------------------------------------------------------------------------------------------------------------------------------------");
+            System.out.printf("%-10s %-5s %-10s %-10s %-20s %-20s %-10s %-15s %-11s %-11s\n", "ListingID", "Host", "Type", "Price", "Address", "City", "Country", "PostalCode", "Latitude", "Longitude");
+            System.out.println("------------------------------------------------------------------------------------------------------------------------------------");
             
             while (rs.next()) {
                 int host = rs.getInt("host_id");
@@ -30,9 +31,9 @@ public class Search {
                 String country = rs.getString("country");
                 String postalcode = rs.getString("postal_code");
 
-                System.out.printf("%-10d %-5d %-10s %-10.2f %-40s %-20s %-10s %-15s %-11.3f %-11.3f\n", listing, host, type, price, address, city, country, postalcode, latitude, longitude);
+                System.out.printf("%-10d %-5d %-10s %-10.2f %-20s %-20s %-10s %-15s %-11.3f %-11.3f\n", listing, host, type, price, address, city, country, postalcode, latitude, longitude);
             }
-            System.out.println("---------------------------------------------------------------------------------------------------------------------------------------------------");
+            System.out.println("------------------------------------------------------------------------------------------------------------------------------------");
 
             rs.close();
             stmt.close();
@@ -69,6 +70,27 @@ public class Search {
             if (res.equals("descending")){
                 query = query + "ORDER BY price DESC";
                 printListings(con, query);
+                sc.nextLine();
+            }
+
+            if (res.equals("amenities")){
+                System.out.println("Enter amenities that you would like to filter Listings by (eg. Dryer, Kitchen)");
+                String amenities_input = sc.nextLine();
+
+                String[] amenityArray = amenities_input.split(",");
+                
+                List<String> amenitiesList = Arrays.asList(amenityArray);
+
+                String updatedQuery = query;
+
+                for (int i = 0; i < amenitiesList.size(); i++) {
+                    String amenity = amenitiesList.get(i).trim();
+                    updatedQuery += " AND (SELECT COUNT(*) FROM ListingAmenities\n" +
+                                    " JOIN Amenities ON ListingAmenities.amenity_id = Amenities.id\n" +
+                                    " WHERE listing_id = Listings.id AND Amenities.name = '" + amenity + "') = 1";
+                }
+                
+                printListings(con, updatedQuery);
                 sc.nextLine();
             }
         }
@@ -145,7 +167,8 @@ public class Search {
 
             rs.close();
             stmt.close();
-            
+
+            filter(con, query);
 
             // Wait for user input (pressing Enter) before continuing
             System.out.println("\nPress Enter to continue...");
@@ -194,7 +217,7 @@ public class Search {
 
         filter(con, query);
 
-        // Wait for user input (pressing Enter) before continuing
+        // Wait for user ivscode-file://vscode-app/Applications/Visual%20Studio%20Code.app/Contents/Resources/app/out/vs/code/electron-sandbox/workbench/workbench.htmlnput (pressing Enter) before continuing
         System.out.println("\nPress Enter to continue...");
         sc.nextLine();
 
