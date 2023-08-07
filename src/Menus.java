@@ -13,8 +13,9 @@ public class Menus {
         System.out.println("4. Cancel a booking");
         System.out.println("5. See my booking future bookings");
         System.out.println("6. See my booking past bookings");
-        System.out.println("7. Delete account");
-        System.out.println("8. Exit");
+        System.out.println("7. Comment on renters");
+        System.out.println("8. Delete account");
+        System.out.println("9. Exit");
 
         int choice = sc.nextInt();
         sc.nextLine();
@@ -47,9 +48,15 @@ public class Menus {
                 App.clearScreen();
                 hostMenu(con, hostID);
             case 7:
-                Delete.host(con);
+                Bookings.readBookings(con, false);
+                System.out.println("Enter ID:");
+                int renter = sc.nextInt();
+                Comments.createRenterComment(con, renter);
                 break;
             case 8:
+                Delete.host(con);
+                break;
+            case 9:
                 System.out.println("Exiting MyBnB. Goodbye!");
                 break;
             default:
@@ -66,8 +73,10 @@ public class Menus {
         System.out.println("3. Cancel a booking");
         System.out.println("4. See my booking future bookings");
         System.out.println("5. See my booking past bookings");
-        System.out.println("6. Delete account");
-        System.out.println("7. Exit");
+        System.out.println("6. Write a review");
+        System.out.println("7. See comments from hosts");
+        System.out.println("8. Delete account");
+        System.out.println("9. Exit");
 
         int choice = sc.nextInt();
 
@@ -94,9 +103,18 @@ public class Menus {
                 App.clearScreen();
                 renterMenu(con, renterID);
             case 6:
+                Bookings.readBookings(con, false);
+                System.out.println("Enter ID:");
+                int listing = sc.nextInt();
+                Comments.createListingComment(con, listing);
+                renterMenu(con, renterID);
+            case 7:
+                Comments.viewComments(con);
+                break;
+            case 8:
                 Delete.user(con);
                 break;
-            case 7:
+            case 9:
                 System.out.println("Exiting MyBnB. Goodbye!");
                 break;
             default:

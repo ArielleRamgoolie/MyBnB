@@ -12,8 +12,8 @@ public class Listings {
         String query = "SELECT * FROM Listings";
 
         // if renter is requesting to see all listings, hostID = -1
-        if (Users.isHost) query += " WHERE host_id = " + Users.userId;
-
+        if (Users.isHost)
+            query += " WHERE host_id = " + Users.userId;
 
         Search.printListings(con, query);
 
@@ -23,22 +23,21 @@ public class Listings {
     public static void viewListing(Connection con, int listingId) {
         float price = -1;
 
-            String query = "SELECT * FROM Listings WHERE id = " + listingId + ";";
+        String query = "SELECT * FROM Listings WHERE id = " + listingId + ";";
 
-            Search.printListings(con, query);
+        Search.printListings(con, query);
 
-            System.out.println("\n1. See reviews");
-            System.out.println("2. See amenities");
-            System.out.println("3. See availability");
-            System.out.println("4. " + (Users.isHost ? "Cancel a booking" : "Make a booking"));
-            if(Users.isHost) {
-                System.out.println("5. Edit price");
-                System.out.println("6. Book days off");
-                System.out.println("7. Add amenity");
-                System.out.println("8. Remove amenity");
-            } 
-            System.out.println((Users.isHost ? 9 : 5) + ". Return to menu");
-            
+        System.out.println("\n1. See reviews");
+        System.out.println("2. See amenities");
+        System.out.println("3. See availability");
+        System.out.println("4. " + (Users.isHost ? "Cancel a booking" : "Make a booking"));
+        if (Users.isHost) {
+            System.out.println("5. Edit price");
+            System.out.println("6. Book days off");
+            System.out.println("7. Add amenity");
+            System.out.println("8. Remove amenity");
+        }
+        System.out.println((Users.isHost ? 9 : 5) + ". Return to menu");
 
         int choice = sc.nextInt();
         sc.nextLine();
@@ -55,28 +54,29 @@ public class Listings {
                 Bookings.getAvailability(con, listingId);
                 break;
             case 4:
-                if(Users.isHost)
-                    Bookings.cancelBooking(con);   
+                if (Users.isHost)
+                    Bookings.cancelBooking(con);
                 else
                     Bookings.createBooking(con, listingId, price);
                 break;
             case 5:
-                if(Users.isHost){
+                if (Users.isHost) {
                     System.out.println("Enter new price: ");
                     double newPrice = sc.nextInt();
                     updateListingPrice(con, listingId, newPrice);
                     break;
-                } else return;
+                } else
+                    return;
             case 6:
-                if(Users.isHost)
+                if (Users.isHost)
                     Bookings.createBooking(con, listingId, 0);
                 break;
             case 7:
-                if(Users.isHost)
+                if (Users.isHost)
                     addAmenity(con, listingId, true);
                 break;
             case 8:
-                if(Users.isHost)
+                if (Users.isHost)
                     addAmenity(con, listingId, false);
                 break;
             case 9:
@@ -90,7 +90,8 @@ public class Listings {
     public static void viewReviews(Connection con, int listingId) {
         try {
 
-            String query = "SELECT CONCAT(Users.first_name, ' ', Users.last_name) as renter_name, Rating, comment, time\n" + //
+            String query = "SELECT CONCAT(Users.first_name, ' ', Users.last_name) as renter_name, rating, comment, time\n"
+                    + //
                     "FROM ListingComment\n" + //
                     "JOIN Users on Users.id = ListingComment.FromUser\n" + //
                     "WHERE ListingID = ?;";
@@ -102,19 +103,18 @@ public class Listings {
 
             App.clearScreen();
             System.out.println("Reviews");
-            System.out.println("--------------------------------------------------------------------------------------");
-            while(rs.next()) {
+            System.out.printf("%-40s %-10s %-70s\n", "Renter", "Rating", "Comment");
+            System.out
+                    .println("--------------------------------------------------------------------------------------");
+            while (rs.next()) {
                 String name = rs.getString("renter_name");
                 int rating = rs.getInt("rating");
                 String comment = rs.getString("comment");
-                java.sql.Timestamp time = rs.getTimestamp("time");
-                
-                System.out.printf("%-60s %-40s\n", name, time);
-                System.out.println(rating + "/5");
-                System.out.println(comment);
 
-                System.out.println("--------------------------------------------------------------------------------------");
+                System.out.printf("%-40s %-10s %-70s\n", name, rating+"/5", comment);
+  
             }
+            System.out.println("--------------------------------------------------------------------------------------");
 
             rs.close();
             stmt.close();
@@ -133,7 +133,7 @@ public class Listings {
             String query = "Select Amenities.*\n" + //
                     "from Amenities\n" + //
                     "join ListingAmenities on amenity_id = Amenities.id\n" + //
-                    "WHERE listing_id = ?\n" + 
+                    "WHERE listing_id = ?\n" +
                     "ORDER BY Amenities.id";
             PreparedStatement stmt = con.prepareStatement(query);
             stmt.setInt(1, listingId);
@@ -144,11 +144,11 @@ public class Listings {
             App.clearScreen();
             System.out.printf("%-10s %-30s %-30s", "ID", "Amenity", "Type");
             System.out.println("\n------------------------------------------------------");
-            while(rs.next()) {
+            while (rs.next()) {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
                 String type = rs.getString("type");
-                
+
                 System.out.printf("%-10s %-30s %-30s\n", id, name, type);
             }
 
@@ -164,18 +164,18 @@ public class Listings {
         }
     }
 
-        public static void addAmenity(Connection con, int listingId, boolean add) {
+    public static void addAmenity(Connection con, int listingId, boolean add) {
         try {
 
             String addQuery = "select *\n" + //
                     "from Amenities\n" + //
-                    "where (select count(*) from ListingAmenities where listing_id = ? and amenity_id = id) = 0\n" + 
+                    "where (select count(*) from ListingAmenities where listing_id = ? and amenity_id = id) = 0\n" +
                     "ORDER BY Amenities.id";
 
             String deleteQuery = "Select Amenities.*\n" + //
                     "from Amenities\n" + //
                     "join ListingAmenities on amenity_id = Amenities.id\n" + //
-                    "WHERE listing_id = ?\n" + 
+                    "WHERE listing_id = ?\n" +
                     "ORDER BY Amenities.id";
 
             PreparedStatement stmt = con.prepareStatement(add ? addQuery : deleteQuery);
@@ -186,18 +186,16 @@ public class Listings {
             App.clearScreen();
             System.out.printf("%-10s %-30s %-30s", "ID", "Amenity", "Type");
             System.out.println("\n------------------------------------------------------");
-            while(rs.next()) {
+            while (rs.next()) {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
                 String type = rs.getString("type");
-                
+
                 System.out.printf("%-10s %-30s %-30s\n", id, name, type);
             }
 
             rs.close();
             stmt.close();
-
-            
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -241,7 +239,7 @@ public class Listings {
 
             String addQuery = "Insert into ListingAmenities (listing_id, amenity_id) values (?, ?);";
 
-            PreparedStatement stmt = con.prepareStatement(add ? addQuery: deleteQuery);
+            PreparedStatement stmt = con.prepareStatement(add ? addQuery : deleteQuery);
 
             stmt.setInt(1, listingId);
             stmt.setInt(2, amenityId);
@@ -250,7 +248,7 @@ public class Listings {
             stmt.close();
 
             if (rowsAffected > 0) {
-                System.out.println((add ? "Added":"Removed") + " amenity successfully!");
+                System.out.println((add ? "Added" : "Removed") + " amenity successfully!");
             } else {
                 System.out.println("Failed, please try again");
             }
@@ -264,7 +262,7 @@ public class Listings {
         }
     }
 
-public static void createListing(Connection con, int hostID) {
+    public static void createListing(Connection con, int hostID) {
         try {
             int host = hostID;
 
@@ -325,13 +323,14 @@ public static void createListing(Connection con, int hostID) {
             }
 
             if (rowsAffected > 0) {
-                System.out.println("Added your listing successfully! Please move onto adding Amenities for your Listing by selecting 3 in menu");
+                System.out.println(
+                        "Added your listing successfully! Please move onto adding Amenities for your Listing by selecting 3 in menu");
                 System.out.println("Press Enter to continue..");
                 System.out.println(key);
                 sc.nextLine();
                 Listings.viewListing(con, key);
                 return;
-                
+
             } else {
                 System.out.println("Failed, please try again");
             }
