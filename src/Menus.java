@@ -13,10 +13,11 @@ public class Menus {
         System.out.println("4. Cancel a booking");
         System.out.println("5. See my booking future bookings");
         System.out.println("6. See my booking past bookings");
-        System.out.println("7. Delete my account and all listings");
+        System.out.println("7. Delete account");
         System.out.println("8. Exit");
 
         int choice = sc.nextInt();
+        sc.nextLine();
         switch (choice) {
             case 1:
                 // get listings
@@ -44,6 +45,9 @@ public class Menus {
                 Bookings.readBookings(con, false);
                 App.clearScreen();
                 hostMenu(con, hostID);
+            case 7:
+                Delete.host(con);
+                break;
             case 8:
                 System.out.println("Exiting MyBnB. Goodbye!");
                 break;
@@ -61,10 +65,11 @@ public class Menus {
         System.out.println("3. Cancel a booking");
         System.out.println("4. See my booking future bookings");
         System.out.println("5. See my booking past bookings");
-        System.out.println("6. Delete my account and cancel all bookings");
+        System.out.println("6. Delete account");
         System.out.println("7. Exit");
 
         int choice = sc.nextInt();
+
         switch (choice) {
             case 1:
                 App.clearScreen();
@@ -87,6 +92,9 @@ public class Menus {
                 Bookings.readBookings(con, false);
                 App.clearScreen();
                 renterMenu(con, renterID);
+            case 6:
+                Delete.user(con);
+                break;
             case 7:
                 System.out.println("Exiting MyBnB. Goodbye!");
                 break;
@@ -111,7 +119,7 @@ public class Menus {
             System.out.println("3. Exit search");
         
             int choice = sc.nextInt();
-            sc.nextLine();
+
             switch (choice) {
                 case 1: 
                     System.out.println("Enter the type of search you'd like to conduct: (eg. distance, postal code, address)");
@@ -133,9 +141,9 @@ public class Menus {
                     App.clearScreen();
                     break;
                 default:
-                    System.out.println("Invalid choice or Feature not yet implemented. Please try again.");
+                    System.out.println("Invalid choice. Please try again.");
                     return;
-                }
+            }
         }
     }
 }

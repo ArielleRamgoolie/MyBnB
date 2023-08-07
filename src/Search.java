@@ -15,9 +15,9 @@ public class Search {
             ResultSet rs = stmt.executeQuery(query);
             App.clearScreen();
             System.out.println("Results:");
-            System.out.println("------------------------------------------------------------------------------------------------------------------------------");
+            System.out.println("-----------------------------------------------------------------------------------------------------------------------------------");
             System.out.printf("%-10s %-5s %-10s %-10s %-11s %-20s %-10s %-10s %-11s %-11s %-11s\n", "ListingID", "Host", "Type", "Price", "HouseNumber", "StreetName", "City", "Country", "PostalCode", "Latitude", "Longitude");
-            System.out.println("------------------------------------------------------------------------------------------------------------------------------");
+            System.out.println("-----------------------------------------------------------------------------------------------------------------------------------");
             
             while (rs.next()) {
                 int host = rs.getInt("host_id");
@@ -34,7 +34,7 @@ public class Search {
 
                 System.out.printf("%-10d %-5d %-10s %-10.2f %-11d %-20s %-10s %-10s %-11s %-11.3f %-11.3f\n", listing, host, type, price, housenumber, streetname, city, country, postalcode, latitude, longitude);
             }
-            System.out.println("------------------------------------------------------------------------------------------------------------------------------");
+            System.out.println("-----------------------------------------------------------------------------------------------------------------------------------");
 
             rs.close();
             stmt.close();
@@ -51,6 +51,7 @@ public class Search {
             System.out.println("What would you like to filter / sort by? (eg. price range, amenities, availibility, ascending, descending)");
             System.out.println("Please note that ascending and descending will sort by prices");
             String res = sc.nextLine();
+
             if (res.equals("price range")){
                 System.out.println("Enter max price");
                 int max = sc.nextInt();
@@ -60,11 +61,13 @@ public class Search {
                 printListings(con, query);
                 sc.nextLine();
             }
+
             if (res.equals("ascending")){
                 query = query + "ORDER BY price ASC";
                 printListings(con, query);
                 sc.nextLine();
             }
+
             if (res.equals("descending")){
                 query = query + "ORDER BY price DESC";
                 printListings(con, query);
