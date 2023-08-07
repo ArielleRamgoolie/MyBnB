@@ -30,29 +30,57 @@ public class Listings {
             System.out.println("\n1. See reviews");
             System.out.println("2. See amenities");
             System.out.println("3. See availability");
-            System.out.println("4. Make booking");
-            System.out.println("5. Return to menu");
+            System.out.println("4. " + (Users.isHost ? "Cancel a booking" : "Make a booking"));
+            if(Users.isHost) {
+                System.out.println("5. Edit price");
+                System.out.println("6. Book days off");
+                System.out.println("7. Add amenity");
+                System.out.println("8. Remove amenity");
+            } 
+            System.out.println((Users.isHost ? 9 : 5) + ". Return to menu");
+            
 
         int choice = sc.nextInt();
         sc.nextLine();
         switch (choice) {
             case 1:
                 // get listings
-                Listings.viewReviews(con, 1);
+                viewReviews(con, listingId);
                 break;
             case 2:
                 // create listings
-                Listings.viewAmenities(con, 1);
+                viewAmenities(con, listingId);
                 break;
             case 3:
-                Bookings.getAvailability(con, 1);
+                Bookings.getAvailability(con, listingId);
                 break;
             case 4:
-                Bookings.createBooking(con, listingId, price);
-            case 5:
-                return;
-            default:
+                if(Users.isHost)
+                    Bookings.cancelBooking(con);   
+                else
+                    Bookings.createBooking(con, listingId, price);
                 break;
+            case 5:
+                if(Users.isHost){
+                    System.out.println("Enter new price: ");
+                    double newPrice = sc.nextInt();
+                    updateListingPrice(con, listingId, newPrice);
+                    break;
+                } else return;
+            case 6:
+                if(Users.isHost)
+                    Bookings.createBooking(con, listingId, 0);
+                break;
+            case 7:
+                if(Users.isHost)
+                    addAmenity(con, listingId, true);
+                break;
+            case 8:
+                if(Users.isHost)
+                    addAmenity(con, listingId, false);
+                break;
+            case 9:
+                return;
         }
         Listings.viewListing(con, listingId);
         return;
@@ -102,10 +130,11 @@ public class Listings {
     public static void viewAmenities(Connection con, int listingId) {
         try {
 
-            String query = "Select distinct Amenities.*\n" + //
+            String query = "Select Amenities.*\n" + //
                     "from Amenities\n" + //
                     "join ListingAmenities on amenity_id = Amenities.id\n" + //
-                    "WHERE listing_id = ?";
+                    "WHERE listing_id = ?\n" + 
+                    "ORDER BY Amenities.id";
             PreparedStatement stmt = con.prepareStatement(query);
             stmt.setInt(1, listingId);
             System.out.print(query + listingId);
@@ -113,13 +142,14 @@ public class Listings {
             ResultSet rs = stmt.executeQuery();
 
             App.clearScreen();
-            System.out.printf("%-30s %-30s", "Amenity", "Type");
-            System.out.println("\n------------------------------------------");
+            System.out.printf("%-10s %-30s %-30s", "ID", "Amenity", "Type");
+            System.out.println("\n------------------------------------------------------");
             while(rs.next()) {
+                int id = rs.getInt("id");
                 String name = rs.getString("name");
                 String type = rs.getString("type");
                 
-                System.out.printf("%-30s %-30s\n", name, type);
+                System.out.printf("%-10s %-30s %-30s\n", id, name, type);
             }
 
             rs.close();
@@ -130,37 +160,52 @@ public class Listings {
 
         } catch (SQLException e) {
             e.printStackTrace();
+            sc.nextLine();
         }
     }
 
-    public static void updateListing(Connection con) {
-        App.clearScreen();
-        Listings.readListings(con);
-        System.out.println("Enter listing id: ");
-        int id = sc.nextInt();
-        sc.nextLine();
-        viewListing(con, id);
-        System.out.println("\n1. Edit price");
-        System.out.println("2. Edit availability");
-        int choice = sc.nextInt();
-        sc.nextLine();
+        public static void addAmenity(Connection con, int listingId, boolean add) {
+        try {
 
-        switch(choice) {
-            case 1:
-                System.out.println("Enter new price: ");
-                double newPrice = sc.nextInt();
-                updateListingPrice(con, id, newPrice);
-            case 2:
-                Bookings.getAvailability(con, id);
-                System.out.println("\n1. Book off date range");
-                System.out.println("2. Cancel bookings");
-                choice = sc.nextInt();
-                if(choice == 1) Bookings.createBooking(con, id, 0);
-                if(choice == 2) Bookings.cancelBooking(con);
-                return;
-            default:
-                return;
+            String addQuery = "select *\n" + //
+                    "from Amenities\n" + //
+                    "where (select count(*) from ListingAmenities where listing_id = ? and amenity_id = id) = 0\n" + 
+                    "ORDER BY Amenities.id";
+
+            String deleteQuery = "Select Amenities.*\n" + //
+                    "from Amenities\n" + //
+                    "join ListingAmenities on amenity_id = Amenities.id\n" + //
+                    "WHERE listing_id = ?\n" + 
+                    "ORDER BY Amenities.id";
+
+            PreparedStatement stmt = con.prepareStatement(add ? addQuery : deleteQuery);
+            stmt.setInt(1, listingId);
+
+            ResultSet rs = stmt.executeQuery();
+
+            App.clearScreen();
+            System.out.printf("%-10s %-30s %-30s", "ID", "Amenity", "Type");
+            System.out.println("\n------------------------------------------------------");
+            while(rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                String type = rs.getString("type");
+                
+                System.out.printf("%-10s %-30s %-30s\n", id, name, type);
+            }
+
+            rs.close();
+            stmt.close();
+
+            
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        System.out.println("\nSelect amenity ID:");
+        int amenityId = sc.nextInt();
+        updateAmenity(con, listingId, amenityId, add);
+
     }
 
     public static void updateListingPrice(Connection con, int listingId, double newPrice) {
@@ -189,7 +234,37 @@ public class Listings {
         }
     }
 
-    public static void createListing(Connection con, int hostID) {
+    public static void updateAmenity(Connection con, int listingId, int amenityId, boolean add) {
+        try {
+            String deleteQuery = "DELETE from ListingAmenities\n" + //
+                    "where listing_id = ? and amenity_id = ?;";
+
+            String addQuery = "Insert into ListingAmenities (listing_id, amenity_id) values (?, ?);";
+
+            PreparedStatement stmt = con.prepareStatement(add ? addQuery: deleteQuery);
+
+            stmt.setInt(1, listingId);
+            stmt.setInt(2, amenityId);
+
+            int rowsAffected = stmt.executeUpdate();
+            stmt.close();
+
+            if (rowsAffected > 0) {
+                System.out.println((add ? "Added":"Removed") + " amenity successfully!");
+            } else {
+                System.out.println("Failed, please try again");
+            }
+            sc.nextLine();
+            System.out.println("\nEnter to continue...");
+            sc.nextLine();
+
+            return;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+public static void createListing(Connection con, int hostID) {
         try {
             int host = hostID;
 

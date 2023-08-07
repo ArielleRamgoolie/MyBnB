@@ -15,7 +15,6 @@ public class Search {
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             App.clearScreen();
-            System.out.println(query);
             System.out.println("----------------------------------------------------------------------------------------------------------------------------------------------------");
             System.out.printf("%-10s %-5s %-10s %-10s %-40s %-20s %-10s %-15s %-11s %-11s\n", "ListingID", "Host", "Type", "Price", "Address", "City", "Country", "PostalCode", "Latitude", "Longitude");
             System.out.println("---------------------------------------------------------------------------------------------------------------------------------------------------");

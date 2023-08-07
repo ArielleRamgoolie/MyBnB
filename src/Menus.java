@@ -23,6 +23,7 @@ public class Menus {
                 // get listings
                 App.clearScreen();
                 Listings.readListings(con);
+                sc.nextLine();
                 hostMenu(con, hostID);
             case 2:
                 // create listings
@@ -31,7 +32,7 @@ public class Menus {
                 hostMenu(con, hostID);
             case 3:
                 // create listings
-            	Listings.updateListing(con);
+            	Listings.viewListing(con, 1);
                 hostMenu(con, hostID);
             case 4:
                 Bookings.cancelBooking(con);
@@ -116,9 +117,11 @@ public class Menus {
         } else if (res.equals("Y")) {
             System.out.println("1. Regular search (distance, postal code, address)");
             System.out.println("2. Advance search (search by multiple filters at once)");
-            System.out.println("3. Exit search");
+            System.out.println("3. Select Listing");
+            System.out.println("4. Exit search");
         
             int choice = sc.nextInt();
+            sc.nextLine();
 
             switch (choice) {
                 case 1: 
@@ -138,6 +141,11 @@ public class Menus {
                     App.clearScreen();
                     Search.advanceSearch(con);
                 case 3:
+                    System.out.println("Enter the listing id:");
+                    int listing_id = sc.nextInt();
+                    Listings.viewListing(con, listing_id);
+                    break;
+                case 4:
                     App.clearScreen();
                     break;
                 default:
