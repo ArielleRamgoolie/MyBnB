@@ -77,7 +77,7 @@ public class Menus {
                 searchMenu(con);
                 renterMenu(con, renterID);
             case 2:
-                Listings.viewListing(con, -1);
+                Listings.viewListing(con, 1);
                 App.clearScreen();
                 renterMenu(con, renterID);
             case 3:

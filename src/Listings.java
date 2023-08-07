@@ -22,38 +22,10 @@ public class Listings {
 
     public static void viewListing(Connection con, int listingId) {
         float price = -1;
-        try {
 
-            String query = "SELECT * FROM Listings WHERE id = ?";
-            PreparedStatement stmt = con.prepareStatement(query);
-            stmt.setInt(1, listingId);
-            System.out.print(query + listingId);
+            String query = "SELECT * FROM Listings WHERE id = " + listingId + ";";
 
-            ResultSet rs = stmt.executeQuery();
-
-            App.clearScreen();
-            System.out.println("----------------------------------------------------------------------------------------------------------------------------------");
-            System.out.printf("%-10s %-5s %-10s %-10s %-20s %-20s %-10s %-15s %-11s %-11s\n", "ListingID", "Host", "Type", "Price", "StreetName", "City", "Country", "PostalCode", "Latitude", "Longitude");
-            System.out.println("----------------------------------------------------------------------------------------------------------------------------------");
-            
-            rs.next();
-            
-            int host = rs.getInt("host_id");
-            int listing = rs.getInt("id");
-            String type = rs.getString("type");
-            float longitude = rs.getFloat("longitude");
-            float latitude = rs.getFloat("latitude");
-            price = rs.getFloat("price");
-            String streetname = rs.getString("address");
-            String city = rs.getString("city");
-            String country = rs.getString("country");
-            String postalcode = rs.getString("postal_code");
-
-            System.out.printf("%-10d %-5d %-10s %-10.2f %-20s %-20s %-10s %-15s %-11.3f %-11.3f\n", listing, host, type, price, streetname, city, country, postalcode, latitude, longitude);
-            System.out.println("----------------------------------------------------------------------------------------------------------------------------------");
-
-            rs.close();
-            stmt.close();
+            Search.printListings(con, query);
 
             System.out.println("\n1. See reviews");
             System.out.println("2. See amenities");
@@ -84,11 +56,6 @@ public class Listings {
         }
         Listings.viewListing(con, listingId);
         return;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            sc.nextLine();
-        }
 
     }
 

@@ -11,11 +11,11 @@ public class Search {
 
     public static void printListings(Connection con, String query){
         try {
-            System.out.println(query);
+            
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(query);
             App.clearScreen();
-            System.out.println("Results:");
+            System.out.println(query);
             System.out.println("----------------------------------------------------------------------------------------------------------------------------------------------------");
             System.out.printf("%-10s %-5s %-10s %-10s %-40s %-20s %-10s %-15s %-11s %-11s\n", "ListingID", "Host", "Type", "Price", "Address", "City", "Country", "PostalCode", "Latitude", "Longitude");
             System.out.println("---------------------------------------------------------------------------------------------------------------------------------------------------");
@@ -27,12 +27,12 @@ public class Search {
                 float longitude = rs.getFloat("longitude");
                 float latitude = rs.getFloat("latitude");
                 float price = rs.getFloat("price");
-                String streetname = rs.getString("address");
+                String address = rs.getString("address");
                 String city = rs.getString("city");
                 String country = rs.getString("country");
                 String postalcode = rs.getString("postal_code");
 
-                System.out.printf("%-10d %-5d %-10s %-10.2f %-40s %-20s %-10s %-15s %-11.3f %-11.3f\n", listing, host, type, price, streetname, city, country, postalcode, latitude, longitude);
+                System.out.printf("%-10d %-5d %-10s %-10.2f %-40s %-20s %-10s %-15s %-11.3f %-11.3f\n", listing, host, type, price, address, city, country, postalcode, latitude, longitude);
             }
             System.out.println("---------------------------------------------------------------------------------------------------------------------------------------------------");
 
