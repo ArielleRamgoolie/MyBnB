@@ -295,8 +295,11 @@ public static void createListing(Connection con, int hostID) {
             System.out.println("Enter the price per night (eg. 52) ");
             double price = sc.nextDouble();
 
-            String query = "INSERT INTO Listings (`host_id`, `type`, `longitude`, `latitude`, `price`, `address`, `city`, `country`, `postal_code`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
-            PreparedStatement stmt = con.prepareStatement(query);
+            // sc.nextLine();
+
+            String query = "INSERT INTO Listings (`host_id`, `type`, `longitude`, `latitude`, `price`, `address`, `city`, `country`, `postal_code`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+            // PreparedStatement stmt = con.prepareStatement(query);
+            PreparedStatement stmt = con.prepareStatement(query, PreparedStatement.RETURN_GENERATED_KEYS);
 
             String address = housenumber + " " + streetname;
 
@@ -306,19 +309,31 @@ public static void createListing(Connection con, int hostID) {
             stmt.setDouble(4, latitude);
             stmt.setDouble(5, price);
             stmt.setString(6, address);
-            stmt.setString(8, city);
-            stmt.setString(9, country);
-            stmt.setString(10, pc);
+            stmt.setString(7, city);
+            stmt.setString(8, country);
+            stmt.setString(9, pc);
 
             int rowsAffected = stmt.executeUpdate();
-            stmt.close();
+            // stmt.close();
+            // preparedStatement.executeUpdate();
+
+            ResultSet rs = stmt.getGeneratedKeys();
+
+            int key = -1;
+            if (rs.next()) {
+                key = rs.getInt(1);
+            }
+
 
             if (rowsAffected > 0) {
-                System.out.println("Added your listing successfully!");
+                System.out.println("Added your listing successfully! Please move onto adding Amenities for your Listing");
+                System.out.println(key);
+                
             } else {
                 System.out.println("Failed, please try again");
             }
 
+            stmt.close();
             return;
         } catch (SQLException e) {
             e.printStackTrace();
