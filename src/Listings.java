@@ -25,7 +25,7 @@ public class Listings {
 
         String query = "SELECT * FROM Listings WHERE id = " + listingId + ";";
 
-        Search.printListings(con, query);
+        price = Search.printListings(con, query);
 
         System.out.println("\n1. See reviews");
         System.out.println("2. See amenities");

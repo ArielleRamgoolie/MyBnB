@@ -11,7 +11,7 @@ import java.util.Scanner;
 public class Search {
     private static final Scanner sc = new Scanner(System.in);
 
-    public static void printListings(Connection con, String query) {
+    public static float printListings(Connection con, String query) {
         try {
 
             Statement stmt = con.createStatement();
@@ -23,14 +23,14 @@ public class Search {
                     "Type", "Price", "Address", "City", "Country", "PostalCode", "Latitude", "Longitude");
             System.out.println(
                     "------------------------------------------------------------------------------------------------------------------------------------");
-
+            float price = -1;
             while (rs.next()) {
                 int host = rs.getInt("host_id");
                 int listing = rs.getInt("id");
                 String type = rs.getString("type");
                 float longitude = rs.getFloat("longitude");
                 float latitude = rs.getFloat("latitude");
-                float price = rs.getFloat("price");
+                price = rs.getFloat("price");
                 String address = rs.getString("address");
                 String city = rs.getString("city");
                 String country = rs.getString("country");
@@ -44,10 +44,12 @@ public class Search {
 
             rs.close();
             stmt.close();
+            return price;
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return -1;
     }
 
     public static void filter(Connection con, String query) {

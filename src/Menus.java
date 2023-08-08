@@ -33,7 +33,11 @@ public class Menus {
                 hostMenu(con, hostID);
             case 3:
                 // create listings
-            	Listings.viewListing(con, 1);
+                App.clearScreen();
+                Listings.readListings(con);
+                System.out.println("Select Listing ID: ");
+                int listing_id = sc.nextInt();
+            	Listings.viewListing(con, listing_id);
                 hostMenu(con, hostID);
             case 4:
                 Bookings.cancelBooking(con);
@@ -58,7 +62,7 @@ public class Menus {
                 break;
             case 9:
                 System.out.println("Exiting MyBnB. Goodbye!");
-                break;
+                System.exit(0);
             default:
                 System.out.println("Invalid choice or Feature not yet implemented. Please try again.");
                 hostMenu(con, hostID);
@@ -87,8 +91,9 @@ public class Menus {
                 searchMenu(con);
                 renterMenu(con, renterID);
             case 2:
-                Listings.viewListing(con, 1);
-                App.clearScreen();
+                System.out.println("Enter ID:");
+                int listingId = sc.nextInt();
+                Listings.viewListing(con, listingId);
                 renterMenu(con, renterID);
             case 3:
                 Bookings.cancelBooking(con);
@@ -116,7 +121,7 @@ public class Menus {
                 break;
             case 9:
                 System.out.println("Exiting MyBnB. Goodbye!");
-                break;
+                System.exit(0);
             default:
                 System.out.println("Invalid choice or Feature not yet implemented. Please try again.");
                 renterMenu(con, renterID);

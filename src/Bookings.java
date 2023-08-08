@@ -17,11 +17,6 @@ public class Bookings {
     private static final int BLOCKED_BY_HOST = 4;
 
     public static void createBooking(Connection con, int id, float pricing) {
-        if (!Users.isHost) {
-            System.out.println("Enter the listing id: ");
-            id = sc.nextInt();
-        }
-
         getAvailability(con, id);
         sc.nextLine();
 
@@ -231,14 +226,14 @@ public class Bookings {
             System.out.println("Bookings:");
             SimpleDateFormat parser = new SimpleDateFormat("dd MMMM YYYY");
 
-            System.out.printf("%-10s %-20s %-10s %-20s $ %-20s %-20s %-20s %-20s\n", "ID",
+            System.out.printf("%-10s %-20s %-10s %-40s $ %-10s %-10s %-20s %-20s\n", "ID",
                     (Users.isHost ? "Renter" : "Host"), "Type", "Address", "Cost",
                     "Nights", "Check-in", "Check-out");
             System.out.println(
                     "--------------------------------------------------------------------------------------------------------------------------------");
             while (rs.next()) {
 
-                System.out.printf("%-10s %-20s %-10s %-20s $ %-20s %-20s %-20s %-20s\n",
+                System.out.printf("%-10s %-20s %-10s %-40s $ %-10s %-10s %-20s %-20s\n",
                         rs.getInt("id"),
                         rs.getString("renter_name"),
                         rs.getString("type").toUpperCase(),

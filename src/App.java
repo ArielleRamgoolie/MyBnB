@@ -66,25 +66,4 @@ public class App {
         System.out.print("\033[H\033[2J");
         System.out.flush();
     }
-	
-	
-	public void removeListing(int listing, int hostID) {
-		
-	}
-	
-	public void changePrice(int listing, float newPrice) {
-		
-	}
-	
-	public void addAnemity(int listing, String anemity) {
-		
-	}
-	
-	public void createBooking(int listing, int Renter, String startDate, String endDate, float cost, String status) {
-		
-	}
-	
-	public void cancelBooking(int bookingId, int user) {
-		
-	}
 }
