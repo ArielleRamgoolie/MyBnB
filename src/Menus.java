@@ -117,7 +117,7 @@ public class Menus {
                 renterMenu(con, renterID);
             case 7:
                 Comments.viewComments(con);
-                break;
+                renterMenu(con, renterID);
             case 8:
                 Delete.user(con);
                 break;

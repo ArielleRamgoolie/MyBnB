@@ -90,7 +90,7 @@ public class Listings {
     public static void viewReviews(Connection con, int listingId) {
         try {
 
-            String query = "SELECT CONCAT(Users.first_name, ' ', Users.last_name) as renter_name, rating, comment, time\n"
+            String query = "SELECT CONCAT(Users.first_name, ' ', Users.last_name) as renter_name, rating, comment\n"
                     + //
                     "FROM ListingComment\n" + //
                     "JOIN Users on Users.id = ListingComment.FromUser\n" + //
@@ -124,6 +124,7 @@ public class Listings {
 
         } catch (SQLException e) {
             e.printStackTrace();
+            sc.nextLine();
         }
     }
 
