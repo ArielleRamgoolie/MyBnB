@@ -112,6 +112,7 @@ public class Menus {
                 Bookings.readBookings(con, false);
                 System.out.println("Enter ID:");
                 int listing = sc.nextInt();
+                sc.nextLine();
                 Comments.createListingComment(con, listing);
                 renterMenu(con, renterID);
             case 7:

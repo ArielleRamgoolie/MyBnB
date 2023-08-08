@@ -225,20 +225,21 @@ public class Bookings {
             System.out.println("Bookings:");
             SimpleDateFormat parser = new SimpleDateFormat("dd MMMM YYYY");
 
-            System.out.printf("%-10s %-20s %-10s %-40s $ %-10s %-10s %-20s %-20s\n", "ID",
+            System.out.printf("%-10s %-20s %-10s %-20s $ %-10s %-10s %-10s %-20s %-20s\n", "ID",
                     (Users.isHost ? "Renter" : "Host"), "Type", "Address", "Cost",
-                    "Nights", "Check-in", "Check-out");
+                    "Nights", "Status", "Check-in", "Check-out");
             System.out.println(
                     "--------------------------------------------------------------------------------------------------------------------------------");
             while (rs.next()) {
 
-                System.out.printf("%-10s %-20s %-10s %-40s $ %-10s %-10s %-20s %-20s\n",
+                System.out.printf("%-10s %-20s %-10s %-20s $ %-10s %-10s %-10s %-20s %-20s\n",
                         rs.getInt("id"),
                         rs.getString("renter_name"),
                         rs.getString("type").toUpperCase(),
                         rs.getString("address"),
                         rs.getDouble("total_cost"),
                         rs.getInt("num_nights"),
+                        rs.getString("status"),
                         parser.format(rs.getDate("start_date")),
                         parser.format(rs.getDate("end_date")));
 
