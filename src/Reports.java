@@ -372,7 +372,7 @@ public class Reports {
                     "COUNT(*) as numCancels\n" + //
                     "from bookings\n" + //
                     "JOIN Users on Users.id = renter_id\n" + //
-                    "where status = 2\n" + //
+                    "where status = " + Bookings.CANCELLED_BY_RENTER +"\n" + //
                     "group by renter_id, yr\n" + //
                     "ORDER by yr, numCancels desc";
 
@@ -427,7 +427,7 @@ public class Reports {
                     "from bookings\n" + //
                     "JOIN Listings on Listings.id = listing_id\n" + //
                     "JOIN Users on Users.id = Listings.host_id\n" + //
-                    "where status = 4\n" + //
+                    "where status = " + Bookings.CANCELLED_BY_HOST +"\n" + //
                     "group by host_id, yr\n" + //
                     "ORDER by yr, numCancels desc";
 

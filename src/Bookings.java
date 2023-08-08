@@ -11,10 +11,10 @@ import java.util.concurrent.TimeUnit;
 public class Bookings {
     private static final Scanner sc = new Scanner(System.in);
 
-    private static final int ACTIVE = 1;
-    private static final int CANCELLED_BY_HOST = 2;
-    private static final int CANCELLED_BY_RENTER = 3;
-    private static final int BLOCKED_BY_HOST = 4;
+    public static final int ACTIVE = 1;
+    public static final int CANCELLED_BY_HOST = 2;
+    public static final int CANCELLED_BY_RENTER = 3;
+    public static final int BLOCKED_BY_HOST = 4;
 
     public static void createBooking(Connection con, int id, float pricing) {
         getAvailability(con, id);
@@ -175,7 +175,6 @@ public class Bookings {
         readBookings(con, true);
         System.out.println("Select booking id from above: ");
         int id = sc.nextInt();
-        sc.nextLine();
 
         try {
 
