@@ -57,7 +57,6 @@ public class Bookings {
 
         System.out.println("\nConfirm booking (y/n):");
         String confirm = sc.nextLine();
-        System.out.println(confirm + " " + confirm == "y");
         if (confirm == "n\n" || confirm == "N\n")
             return;
 
