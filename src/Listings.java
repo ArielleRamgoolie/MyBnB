@@ -142,6 +142,7 @@ public class Listings {
             ResultSet rs = stmt.executeQuery();
 
             App.clearScreen();
+            System.out.println("\n------------------------------------------------------");
             System.out.printf("%-10s %-30s %-30s", "ID", "Amenity", "Type");
             System.out.println("\n------------------------------------------------------");
             while (rs.next()) {
@@ -167,10 +168,16 @@ public class Listings {
     public static void addAmenity(Connection con, int listingId, boolean add) {
         try {
 
-            String addQuery = "select *\n" + //
-                    "from Amenities\n" + //
-                    "where (select count(*) from ListingAmenities where listing_id = ? and amenity_id = id) = 0\n" +
-                    "ORDER BY Amenities.id";
+            // String addQuery = "select *\n" + //
+            //         "from Amenities\n" + //
+            //         "where (select count(*) from ListingAmenities where listing_id = ? and amenity_id = id) = 0\n" +
+            //         "ORDER BY Amenities.id";
+            String addQuery = "SELECT Amenities.*, GREATEST(0, (AVG(Listings.price) - (SELECT price FROM Listings WHERE id = ?))) AS price_increase\n" + //
+                                "FROM Amenities\n" + //
+                                "JOIN ListingAmenities ON Amenities.id = ListingAmenities.amenity_id\n" + //
+                                "JOIN Listings ON ListingAmenities.listing_id = Listings.id\n" + //
+                                "WHERE (SELECT COUNT(*) FROM ListingAmenities WHERE listing_id = ? AND amenity_id = Amenities.id) = 0\n" + //
+                                "GROUP BY Amenities.name";
 
             String deleteQuery = "Select Amenities.*\n" + //
                     "from Amenities\n" + //
@@ -180,18 +187,24 @@ public class Listings {
 
             PreparedStatement stmt = con.prepareStatement(add ? addQuery : deleteQuery);
             stmt.setInt(1, listingId);
+            stmt.setInt(2, listingId);
 
             ResultSet rs = stmt.executeQuery();
 
             App.clearScreen();
-            System.out.printf("%-10s %-30s %-30s", "ID", "Amenity", "Type");
-            System.out.println("\n------------------------------------------------------");
+            System.out.println("HOST TOOLKIT SUGGESTION:");
+            System.out.println("The following list shows the amenities that your listing does not have.");
+            System.out.println("My BnB suggests adding as many \" ESSENTIAL \" amenities as possible to maximize your profit\n");
+            System.out.println("\n-------------------------------------------------------------------------------------");
+            System.out.printf("%-10s %-30s %-20s %-25s", "ID", "Amenity", "Type", "Suggested Price Increase");
+            System.out.println("\n-------------------------------------------------------------------------------------");
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
                 String type = rs.getString("type");
+                float priceIncrease = rs.getFloat("price_increase");
 
-                System.out.printf("%-10s %-30s %-30s\n", id, name, type);
+                System.out.printf("%-10s %-30s %-20s %-25.2f\n", id, name, type, priceIncrease);
             }
 
             rs.close();
