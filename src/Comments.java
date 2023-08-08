@@ -13,8 +13,9 @@ public class Comments {
             System.out.println("Add your comment");
             String comment = sc.nextLine();
 
-            System.out.println("Add your rating");
+            System.out.println("Add your rating (0-5)");
             int rating = sc.nextInt();
+            sc.nextLine();
 
             String query = "INSERT INTO RenterComment (`FromUser`, `ToUser`, `Comment`, `Rating`) VALUES (?, ?, ?, ?);";
             // PreparedStatement stmt = con.prepareStatement(query);

@@ -55,8 +55,9 @@ public class Menus {
                 Bookings.readBookings(con, false);
                 System.out.println("Enter ID:");
                 int renter = sc.nextInt();
+                sc.nextLine();
                 Comments.createRenterComment(con, renter);
-                break;
+                hostMenu(con, hostID);
             case 8:
                 Delete.host(con);
                 break;
@@ -64,7 +65,7 @@ public class Menus {
                 System.out.println("Exiting MyBnB. Goodbye!");
                 System.exit(0);
             default:
-                System.out.println("Invalid choice or Feature not yet implemented. Please try again.");
+                System.out.println("Invalid choice. Please try again.");
                 hostMenu(con, hostID);
         }
     }

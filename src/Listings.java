@@ -341,7 +341,7 @@ public class Listings {
                 System.out.println(
                         "Added your listing successfully! Please move onto adding Amenities for your Listing by selecting 3 in menu");
                 System.out.println("Press Enter to continue..");
-                System.out.println(key);
+                //System.out.println(key);
                 sc.nextLine();
                 Listings.viewListing(con, key);
                 return;
