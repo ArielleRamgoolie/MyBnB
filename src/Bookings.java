@@ -17,12 +17,11 @@ public class Bookings {
     private static final int BLOCKED_BY_HOST = 4;
 
     public static void createBooking(Connection con, int id, float pricing) {
-        if(!Users.isHost) {
+        if (!Users.isHost) {
             System.out.println("Enter the listing id: ");
             id = sc.nextInt();
         }
 
-        // float pricing = Listings.viewListing(con, id);
         getAvailability(con, id);
         sc.nextLine();
 
@@ -47,8 +46,10 @@ public class Bookings {
             return;
         }
 
-        if (isUnavailable(con, start, end)) {
+        if (startDate.after(endDate) || startDate.equals(endDate) || isUnavailable(con, id, new Date(startDate.getTime()), new Date(endDate.getTime()))) {
             System.out.println("Sorry, the days are not available. Please try again.");
+            System.out.println("\nEnter to return...");
+            sc.nextLine();
             return;
         }
 
@@ -56,7 +57,8 @@ public class Bookings {
 
         System.out.println("\n\n" + "SUMMARY\n");
         System.out.println(nights + " nights");
-        if(!Users.isHost) System.out.println("$" + pricing * nights);
+        if (!Users.isHost)
+            System.out.println("$" + pricing * nights);
 
         System.out.println("\nConfirm booking (y/n):");
         String confirm = sc.nextLine();
@@ -82,13 +84,13 @@ public class Bookings {
             stmt.close();
 
             if (rowsAffected > 0) {
-                if(!Users.isHost)
+                if (!Users.isHost)
                     System.out.println("Successfully booked off the days!");
                 else
                     System.out.println("Added your booking successfully!");
             } else {
                 System.out.println("Failed, please try again");
-                if(!Users.isHost)
+                if (!Users.isHost)
                     System.out.println("You may have to cancel some bookings");
             }
             System.out.println("\nEnter to continue...");
@@ -120,11 +122,11 @@ public class Bookings {
             while (rs.next()) {
                 if (start.after(rs.getDate("start_date", null)) || start.equals(rs.getDate("start_date", null))) {
                     start = rs.getDate("end_date", null);
-                    rs.next();
+                } else {
+                    System.out.printf("From %-10s to %-10s\n", formatter.format(start),
+                            formatter.format(rs.getDate("start_date", null)));
+                    start = rs.getDate("end_date", null);
                 }
-                System.out.printf("From %-10s to %-10s\n", formatter.format(start),
-                        formatter.format(rs.getDate("start_date", null)));
-                start = rs.getDate("end_date", null);
             }
             try {
                 if (!start.equals(formatter.parse("31 December 9999")))
@@ -147,7 +149,31 @@ public class Bookings {
         }
     }
 
-    public static boolean isUnavailable(Connection con, String startDate, String endDate) {
+    public static boolean isUnavailable(Connection con, int listingId, Date startDate, Date endDate) {
+        String query = "SELECT COUNT(*) as result\n" + //
+                "FROM bookings\n" + //
+                "WHERE listing_id = ?\n" + //
+                "AND GREATEST(start_date, ?) < LEAST(end_date, ?)\n" + //
+                "AND (status = " + ACTIVE + " or status = " + BLOCKED_BY_HOST + ")\n" + //
+                "ORDER BY start_date;";
+        try {
+            PreparedStatement stmt = con.prepareStatement(query);
+
+            stmt.setInt(1, listingId);
+            stmt.setDate(2, startDate);
+            stmt.setDate(3, endDate);
+
+            ResultSet rs = stmt.executeQuery();
+
+            rs.next();
+            
+            int result = rs.getInt("result");
+            return result > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            sc.nextLine();
+        }
         return false;
     }
 
@@ -190,11 +216,11 @@ public class Bookings {
 
             String query = "SELECT Bookings.*, Listings.*, CONCAT(Users.first_name, ' ', Users.last_name) as renter_name FROM Bookings "
                     + "JOIN Listings on Bookings.listing_id = Listings.id "
-                    + "JOIN Users on Users.id = " + (Users.isHost ? "Bookings.renter_id": "Listings.host_id")
+                    + "JOIN Users on Users.id = " + (Users.isHost ? "Bookings.renter_id" : "Listings.host_id")
                     + " where start_date "
-                    + (future ? ">" : "<") + " curdate() AND " + (Users.isHost ? "host_id": "renter_id")
+                    + (future ? ">" : "<") + " curdate() AND " + (Users.isHost ? "host_id" : "renter_id")
                     + " = ? AND status = " + ACTIVE + " ORDER BY start_date;";
-        
+
             PreparedStatement stmt = con.prepareStatement(query);
 
             stmt.setInt(1, Users.userId);
@@ -205,7 +231,8 @@ public class Bookings {
             System.out.println("Bookings:");
             SimpleDateFormat parser = new SimpleDateFormat("dd MMMM YYYY");
 
-            System.out.printf("%-10s %-20s %-10s %-20s $ %-20s %-20s %-20s %-20s\n", "ID", (Users.isHost ? "Renter" : "Host"), "Type", "Address", "Cost",
+            System.out.printf("%-10s %-20s %-10s %-20s $ %-20s %-20s %-20s %-20s\n", "ID",
+                    (Users.isHost ? "Renter" : "Host"), "Type", "Address", "Cost",
                     "Nights", "Check-in", "Check-out");
             System.out.println(
                     "--------------------------------------------------------------------------------------------------------------------------------");
