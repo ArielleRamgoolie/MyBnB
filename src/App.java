@@ -45,12 +45,59 @@ public class App {
                 Users.createUser(con);
                 break;
             case 3:
-                // Reports.BookingsPer(con, true);
-                // Reports.BookingsPer(con, false);
-                // Reports.ListingsPer(con, 1);
-                // Reports.ListingsPer(con, 2);
-                // Reports.ListingsPer(con, 3);
-                // Reports.RankHosts(con);
+                    System.out.println("Welcome to your Airbnb App Admin! What would you like to do today:");
+                    System.out.println("1. Total bookings in a specific date range by city");
+                    System.out.println("2. Total bookings in a specific date range by postal code");
+                    System.out.println("3. Total number of listings per country");
+                    System.out.println("4. Total number of listings per country per city");
+                    System.out.println("5. Total number of listings per country per city per postal code");
+                    System.out.println("6. Rank hosts by number of listings of listings per country");
+                    System.out.println("7. Rank renters by number of bookings in a specific time period");
+                    System.out.println("8. Rank renters by number of bookings in a specific time period per city");
+                    System.out.println("9. Rank renters who have made at least 2 bookings in the year");
+                    System.out.println("10. Hosts with the largest number of cancellations per year");
+                    System.out.println("11. Renters with the largest number of cancellations per year");
+                    System.out.println("12. Exit");
+                    int option = sc.nextInt();
+                    sc.nextLine();
+                    switch (option) {
+                        case 1:
+                            Reports.BookingsPer(con, true);
+                            App.startApp(con);
+                        case 2:
+                            Reports.BookingsPer(con, false);
+                            App.startApp(con);
+                        case 3:
+                            Reports.ListingsPer(con, 1);
+                            App.startApp(con);
+                        case 4:
+                            Reports.ListingsPer(con, 2);
+                            App.startApp(con);
+                        case 5:
+                            Reports.ListingsPer(con, 3);
+                            App.startApp(con);
+                        case 6: 
+                            Reports.RankHosts(con);
+                            App.startApp(con);
+                        case 7: 
+                            Reports.BookingsPerRenter(con, false);
+                            App.startApp(con);
+                        case 8: 
+                            Reports.BookingsPerRenter(con, true);
+                            App.startApp(con);
+                        case 9: 
+                            Reports.BookingsPerRenterInYear(con);
+                            App.startApp(con);
+                        case 10: 
+                            Reports.HostCancelsPerYear(con);
+                            App.startApp(con);
+                        case 11:
+                            Reports.RenterCancelsPerYear(con);
+                            App.startApp(con);
+                        case 12: 
+                            System.out.println("Goodbye!");
+                            break;
+                    }
                 break;
             case 4:
                 clearScreen();
