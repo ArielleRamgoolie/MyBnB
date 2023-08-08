@@ -168,6 +168,7 @@ public class Menus {
                 case 3:
                     System.out.println("Enter the listing id:");
                     int listing_id = sc.nextInt();
+                    sc.nextLine();
                     Listings.viewListing(con, listing_id);
                     break;
                 case 4:

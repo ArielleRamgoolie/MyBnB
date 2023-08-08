@@ -175,6 +175,7 @@ public class Bookings {
         readBookings(con, true);
         System.out.println("Select booking id from above: ");
         int id = sc.nextInt();
+        sc.nextLine();
 
         try {
 
