@@ -303,7 +303,9 @@ public class Listings {
             System.out.println("Enter the latitude (eg. 54.555) ");
             double latitude = sc.nextDouble();
 
-            System.out.println("Enter the price per night (eg. 52) ");
+            System.out.println("\nEnter the price per night (eg. 52) ");
+            float suggestedprice = suggestPrice(type, city, con);
+            System.out.printf("Host Toolkit: We suggest: $%.2f based on the type and city of listing\n", suggestedprice);
             double price = sc.nextDouble();
 
             sc.nextLine();
@@ -353,5 +355,27 @@ public class Listings {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static float suggestPrice(String type, String city, Connection con){
+        float avgprice = -1;
+        try {
+
+            String query = "SELECT AVG(Listings.price) as average_price FROM Listings\n" + //
+            "WHERE type = '" + type + "'\n" + //
+            "AND city = '" + city + "'\n";
+
+            Statement stmt = con.createStatement();
+            ResultSet results = stmt.executeQuery(query);
+
+            if (results.next()) { 
+                avgprice = results.getFloat("average_price");
+            }
+
+            results.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return avgprice;
     }
 }
