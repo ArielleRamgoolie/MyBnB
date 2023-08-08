@@ -182,4 +182,293 @@ public class Reports {
         }
 
     }
+
+    public static void findPossibleCommercialHosts(Connection con) {
+
+        try {
+
+            String query = "SELECT * \n" + //
+                    "FROM\n" + //
+                    "(SELECT \n" + //
+                    "host_id, \n" + //
+                    "CONCAT(first_name,' ', last_name) as host, \n" + //
+                    "country, \n" + //
+                    "city, \n" + //
+                    "COUNT(*) as numListings,\n" + //
+                    "(COUNT(*) / (SELECT COUNT(*) from Listings as l1 where l1.city = l2.city) * 100) as coverage\n" + //
+                    "from Listings as l2\n" + //
+                    "join Users on host_id = Users.id\n" + //
+                    "group by host_id, country, city\n" + //
+                    "order by city, country, coverage desc) as t1\n" + //
+                    "WHERE t1.coverage > 10";
+            
+            PreparedStatement stmt = con.prepareStatement(query);
+
+            ResultSet rs = stmt.executeQuery();
+
+            App.clearScreen();
+            System.out.printf("%-10s %-30s %-20s %-20s %-20s %-10s\n", "Host ID", "Host", "Country", "City", "# of Listings", "Coverage");
+            System.out
+                    .println("---------------------------------------------------------------------------------------------------------------------");
+
+            while (rs.next()) {
+                String country = rs.getString("country");
+                String city = rs.getString("city");
+                String host = rs.getString("host");
+                int listings = rs.getInt("numListings");
+                int hostId = rs.getInt("host_id");
+                float coverage = rs.getFloat("coverage");
+
+                System.out.printf("%-10s %-30s %-20s %-20s %-20s %.2f %%\n", hostId, host, country, city, listings, coverage);
+            }
+            System.out
+                    .println("---------------------------------------------------------------------------------------------------------------------");
+
+            rs.close();
+            stmt.close();
+
+            // Wait for user input (pressing Enter) before continuing
+            System.out.println("\nPress Enter to continue...");
+            sc.nextLine();
+
+            return;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static void BookingsPerRenter(Connection con, boolean city) {
+        System.out.println("Enter the start date (YYYY-MM-DD): ");
+        String start = sc.nextLine();
+        System.out.println("Enter the end date (YYYY-MM-DD): ");
+        String end = sc.nextLine();
+
+        SimpleDateFormat parser = new SimpleDateFormat("yyyy-MM-dd");
+        java.util.Date startDate;
+        java.util.Date endDate;
+
+        try {
+            startDate = parser.parse(start);
+            endDate = parser.parse(end);
+
+            String query = "SELECT CONCAT(first_name, ' ', last_name) as renter" + (city ? ", city": "") + ", renter_id, COUNT(*) as ct\n" + //
+                            " FROM bookings\n" + //
+                            " JOIN Users on Users.id = renter_id\n" + //
+                            (city ? "\n  JOIN Listings on Listings.id = listing_id\n" : " ") + //
+                            " WHERE start_date >= ? and end_date <= ? \n" + //
+                            " GROUP BY renter_id" + (city ? ", city": "") + 
+                            "\n ORDER BY " + (city ? "city, ct desc": "ct desc");
+
+            
+            PreparedStatement stmt = con.prepareStatement(query);
+
+            stmt.setDate(1, new Date(startDate.getTime()));
+            stmt.setDate(2, new Date(endDate.getTime()));
+
+
+            ResultSet rs = stmt.executeQuery();
+
+            App.clearScreen();
+            System.out.println("Bookings per user from " + new Date(startDate.getTime()) + " to " + new Date(endDate.getTime()) + ":");
+            System.out
+                    .println("--------------------------------------------------------------------------" + (city? "-------------------------": ""));
+            if(city)
+                System.out.printf("%-20s %-10s %-30s %-10s %20s\n", "City", "Rank", "Renter", "User ID", "# of Bookings");
+            else 
+                System.out.printf("%-10s %-30s %-10s %20s\n", "Rank", "Renter", "User ID", "# of Bookings");
+            System.out
+                    .println("--------------------------------------------------------------------------" + (city? "-------------------------": ""));
+            int rank = 1;
+            String cty = "";
+            while (rs.next()) {
+                if(city && !cty.equals(rs.getString("city"))) {
+                    cty = rs.getString("city");
+                    rank = 1;
+                    System.out.println("\n" + cty.toUpperCase());
+                }
+                int renterId = rs.getInt("renter_id");
+                String renter = rs.getString("renter");
+                int count = rs.getInt("ct");
+
+                if(city)
+                    System.out.printf("%-20s %-10s %-30s %-10s %20s\n", cty, rank, renter, renterId, count);
+                else 
+                    System.out.printf("%-10s %-30s %-10s %20s\n", rank, renter, renterId, count);
+                rank++;
+            }
+            System.out
+                    .println("------------------------------------------------------------------------" + (city? "-------------------------": ""));
+
+            rs.close();
+            stmt.close();
+
+            // Wait for user input (pressing Enter) before continuing
+            System.out.println("\nPress Enter to continue...");
+            sc.nextLine();
+            return;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return;
+        }
+    }
+
+    public static void BookingsPerRenterInYear(Connection con) {
+
+        try {
+
+            String query = "SELECT CONCAT(first_name, ' ', last_name) as renter, renter_id, COUNT(*) as ct\n" + //
+                            " FROM bookings\n" + //
+                            " JOIN Users on Users.id = renter_id\n" + //
+                            " where start_date >  DATE_SUB(NOW(),INTERVAL 1 YEAR) and cnt >= 2 \n" + //
+                            " GROUP BY renter_id \n"+ 
+                            "\n ORDER BY ct desc";
+
+            
+            PreparedStatement stmt = con.prepareStatement(query);
+
+
+            ResultSet rs = stmt.executeQuery();
+
+            App.clearScreen();
+            System.out.println("Bookings per user from the past year:");
+            System.out
+                    .println("--------------------------------------------------------------------------");
+
+                System.out.printf("%-10s %-30s %-10s %20s\n", "Rank", "Renter", "User ID", "# of Bookings");
+            System.out
+                    .println("--------------------------------------------------------------------------");
+            int rank = 1;
+            while (rs.next()) {
+                int renterId = rs.getInt("renter_id");
+                String renter = rs.getString("renter");
+                int count = rs.getInt("ct");
+                System.out.printf("%-10s %-30s %-10s %20s\n", rank, renter, renterId, count);
+                rank++;
+            }
+            System.out
+                    .println("------------------------------------------------------------------------");
+
+            rs.close();
+            stmt.close();
+
+            // Wait for user input (pressing Enter) before continuing
+            System.out.println("\nPress Enter to continue...");
+            sc.nextLine();
+            return;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } 
+    }
+
+    public static void RenterCancelsPerYear(Connection con) {
+
+        try {
+
+            String query = "SELECT renter_id, YEAR(start_date) as yr,\n" + //
+                    "CONCAT(first_name, ' ', last_name) as renter,\n" + //
+                    "COUNT(*) as numCancels\n" + //
+                    "from bookings\n" + //
+                    "JOIN Users on Users.id = renter_id\n" + //
+                    "where status = 2\n" + //
+                    "group by renter_id, yr\n" + //
+                    "ORDER by yr, numCancels desc";
+
+            PreparedStatement stmt = con.prepareStatement(query);
+
+
+            ResultSet rs = stmt.executeQuery();
+
+            App.clearScreen();
+            System.out.println("Renter cancels per year:");
+            System.out
+                    .println("------------------------------------------------------------------------------------------------");
+
+                System.out.printf("%-20s %-10s %-30s %-10s %20s\n", "Year", "Rank", "Renter", "User ID", "# of Cancels");
+            System.out
+                    .println("------------------------------------------------------------------------------------------------");
+            int rank = 1;
+            int year = 0;
+            while (rs.next()) {
+                if(year != rs.getInt("yr")){
+                    year = rs.getInt("yr");
+                    rank = 1;
+                }
+                int renterId = rs.getInt("renter_id");
+                String renter = rs.getString("renter");
+                int count = rs.getInt("numCancels");
+                System.out.printf("%-20s %-10s %-30s %-10s %20s\n", year, rank, renter, renterId, count);
+                rank++;
+            }
+            System.out
+                    .println("------------------------------------------------------------------------------------------------");
+
+            rs.close();
+            stmt.close();
+
+            // Wait for user input (pressing Enter) before continuing
+            System.out.println("\nPress Enter to continue...");
+            sc.nextLine();
+            return;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } 
+    }
+
+    public static void HostCancelsPerYear(Connection con) {
+
+        try {
+
+            String query = "SELECT host_id, YEAR(start_date) as yr,\n" + //
+                    "CONCAT(first_name, ' ', last_name) as host,\n" + //
+                    "COUNT(*) as numCancels\n" + //
+                    "from bookings\n" + //
+                    "JOIN Listings on Listings.id = listing_id\n" + //
+                    "JOIN Users on Users.id = Listings.host_id\n" + //
+                    "where status = 4\n" + //
+                    "group by host_id, yr\n" + //
+                    "ORDER by yr, numCancels desc";
+
+            PreparedStatement stmt = con.prepareStatement(query);
+
+
+            ResultSet rs = stmt.executeQuery();
+
+            App.clearScreen();
+            System.out.println("Host cancels per year:");
+            System.out
+                    .println("------------------------------------------------------------------------------------------------");
+
+                System.out.printf("%-20s %-10s %-30s %-10s %20s\n", "Year", "Rank", "Host", "User ID", "# of Cancels");
+            System.out
+                    .println("------------------------------------------------------------------------------------------------");
+            int rank = 1;
+            int year = 0;
+            while (rs.next()) {
+                if(year != rs.getInt("yr")){
+                    year = rs.getInt("yr");
+                    rank = 1;
+                }
+                int hostId = rs.getInt("host_id");
+                String host = rs.getString("host");
+                int count = rs.getInt("numCancels");
+                System.out.printf("%-20s %-10s %-30s %-10s %20s\n", year, rank, host, hostId, count);
+                rank++;
+            }
+            System.out
+                    .println("------------------------------------------------------------------------------------------------");
+
+            rs.close();
+            stmt.close();
+
+            // Wait for user input (pressing Enter) before continuing
+            System.out.println("\nPress Enter to continue...");
+            sc.nextLine();
+            return;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } 
+    }
 }
