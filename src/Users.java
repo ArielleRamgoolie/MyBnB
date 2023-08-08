@@ -30,7 +30,7 @@ public class Users {
             
             System.out.println("Enter your address: ");
             String address = sc.next();
-
+            sc.next();
             String dob;
             do {
                 System.out.println("Enter your date of birth (yyyy-mm-dd): ");
@@ -42,7 +42,7 @@ public class Users {
                 return;
             }
 
-            System.out.println("Enter your SIN I am the bank >;) : ");
+            System.out.println("Enter your SIN: ");
             int SIN = sc.nextInt();
             sc.nextLine();
             
@@ -55,7 +55,7 @@ public class Users {
             // only collect a renter's payment info
             String payment;
             if (type.equals("r")){
-                System.out.println("Enter your payment info hehehehe >:) : ");
+                System.out.println("Enter your payment info: ");
                 payment = sc.next();
             } else {
                 payment = "null";

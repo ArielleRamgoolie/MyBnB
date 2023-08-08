@@ -188,7 +188,8 @@ public class Listings {
 
             PreparedStatement stmt = con.prepareStatement(add ? addQuery : deleteQuery);
             stmt.setInt(1, listingId);
-            stmt.setInt(2, listingId);
+            if(add)
+                stmt.setInt(2, listingId);
 
             ResultSet rs = stmt.executeQuery();
 
@@ -203,7 +204,7 @@ public class Listings {
                 int id = rs.getInt("id");
                 String name = rs.getString("name");
                 String type = rs.getString("type");
-                float priceIncrease = rs.getFloat("price_increase");
+                float priceIncrease = add ? rs.getFloat("price_increase"): 0;
 
                 System.out.printf("%-10s %-30s %-20s %-25.2f\n", id, name, type, priceIncrease);
             }
