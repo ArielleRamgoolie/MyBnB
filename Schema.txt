@@ -1,10 +1,13 @@
 Drop all tables:
 
-DROP TABLE Users;
-DROP TABLE Listings;
-DROP TABLE Bookings;
-DROP TABLE Amenities;
 DROP TABLE ListingAmenities;
+DROP TABLE Amenities;
+DROP TABLE Bookings;
+DROP TABLE ListingComment;
+DROP TABLE RenterComment;
+DROP TABLE Listings;
+DROP TABLE Users;
+
 
 -- Tables
 
